@@ -77,9 +77,9 @@ export class DinTest {
   async playTriplet(triplet, snr) {
     const c = getContext();
     const t0 = c.currentTime + 0.1;
-    // Garde-fou anti-saturation : crête voix ≤ RMS + 19 dB et crête bruit ≤ RMS + 14 dB (mesuré) doivent rester sous −1 dBFS.
+    // Garde-fou anti-saturation : crête voix ≤ RMS + 22 dB et crête bruit ≤ RMS + 14 dB (mesuré) doivent rester sous −1 dBFS.
     // Si besoin, voix ET bruit baissent ensemble : le rapport signal/bruit est conservé.
-    const excess = Math.max(0, this.noiseDbfs + snr + 19 + 1, this.noiseDbfs + 14 + 1);
+    const excess = Math.max(0, this.noiseDbfs + snr + 22 + 1, this.noiseDbfs + 14 + 1);
     const noiseGain = Math.pow(10, (this.noiseDbfs - excess - this.noiseRmsDb) / 20);
     const speechGain = Math.pow(10, (this.noiseDbfs - excess + snr - this.speechRmsDb) / 20);
     // Durée : 0,5 s de bruit, chiffres espacés de 0,3 s, 0,5 s de bruit
