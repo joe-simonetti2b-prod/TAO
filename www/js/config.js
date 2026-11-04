@@ -37,7 +37,10 @@ export const DEFAULT_SETTINGS = {
   noiseMarginDb: 15,           // dB tolérés au-dessus du bruit de référence
   systemVolumeIndex: null,     // cran de volume média fixé par le natif (null = non défini)
   dailyCheck: true,            // contrôle d'écoute quotidien par le conseiller
-  dinEnabled: false,           // module chiffres dans le bruit (quand la voix sera prête)
+  dinEnabled: true,            // module chiffres dans le bruit
+  dinVoice: 'auto',            // 'homme' | 'femme' | 'auto' (alterne)
+  dinAntiphasic: false,
+  dinReferSrt: -7,             // seuil d'orientation provisoire (dB RSB) – à valider
   advisors: [],                // conseillers (traçabilité)
 };
 

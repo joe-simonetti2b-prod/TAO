@@ -7,7 +7,7 @@ import * as store from './store.js';
 import * as device from './device.js';
 import { resume, playHL, playDbfs, playContinuous, NoiseMonitor, LevelError } from './audio.js';
 import { ToneTest } from './tonetest.js';
-import { DinTest, dinAvailable } from './din.js';
+import { DinTest, dinAvailable, dinManifest, resolveVoice } from './din.js';
 import { ICONS, themeIcon } from './icons.js';
 
 const $ = (s, el = document) => el.querySelector(s);
@@ -228,7 +228,11 @@ async function runTest() {
     calibDate: c.date, calibMethod: c.method, headsetMode: c.headsetMode, appVersion: APP.version,
   });
 
-  if (s.dinEnabled && r.outcome !== 'unreliable' && await dinAvailable()) return show('s-din-intro');
+  if (s.dinEnabled && r.outcome !== 'unreliable') {
+    const last = store.getResults().filter(x => x.din?.voice).slice(-1)[0]?.din?.voice;
+    S.dinVoice = resolveVoice(s.dinVoice || 'auto', last);
+    if (await dinAvailable(S.dinVoice)) return show('s-din-intro');
+  }
   showResult();
 }
 
@@ -286,7 +290,7 @@ function showAdvisorResult() {
   $('#ar-table').innerHTML = `<h3>Sons perçus à ${r.levelHL} dB HL${r.extra500 ? ` (500 Hz : ${r.levelHL + r.extra500} dB HL)` : ''}</h3>${resultTable(r)}`;
   $('#ar-side').innerHTML = `<h3>Synthèse</h3><p>${outcomePill(r.outcome)}</p>
     <p class="small">Fausses alarmes : <b>${r.falsePositives}</b> ${r.reliable ? '' : '(trop élevé)'}</p>
-    ${r.din ? `<p class="small">Chiffres dans le bruit : <b>${r.din.srt} dB RSB</b></p>` : ''}
+    ${r.din ? `<p class="small">Chiffres dans le bruit : <b>${r.din.srt} dB RSB</b> (voix ${r.din.voice}${r.din.antiphasic ? ', antiphasique' : ''})</p>` : ''}
     <p class="small soft">Sons : ${r.stimulusType === 'theme' ? 'thématiques' : 'purs pulsés'} · ${r.duration} s</p>
     <p class="small soft">Étalonnage du ${r.calibDate ? new Date(r.calibDate).toLocaleDateString('fr-FR') : '?'} (${r.calibMethod || '?'})</p>`;
   $('#btn-refer').textContent = r.referred ? 'Fiche d’orientation' : 'Orienter vers le centre audio';
@@ -328,7 +332,7 @@ async function runDin() {
     disp.textContent = typed.padEnd(3, '·');
   };
   S.din = new DinTest({
-    calib: S.calibInfo.calib, antiphasic: !!S.settings.dinAntiphasic,
+    calib: S.calibInfo.calib, voice: S.dinVoice || 'homme', antiphasic: !!S.settings.dinAntiphasic,
     hooks: {
       onTriplet: (i, n) => { $('#din-progress').textContent = `${i + 1} / ${n}`; $('#din-hint').textContent = 'Écoutez…'; disp.textContent = ''; },
       askAnswer: () => new Promise(res => { typed = ''; disp.textContent = '···'; $('#din-hint').textContent = 'Tapez les 3 chiffres puis OK'; resolver = res; }),
@@ -449,6 +453,7 @@ function tabSettings(m) {
     <div class="field"><label>Contrôle d'écoute quotidien par le conseiller</label>${seg('daily', ['on', 'off'], s.dailyCheck ? 'on' : 'off', v => v === 'on' ? 'Obligatoire' : 'Désactivé')}</div>
     <div class="field"><label>Module « chiffres dans le bruit »</label>${seg('din', ['on', 'off'], s.dinEnabled ? 'on' : 'off', v => v === 'on' ? 'Activé' : 'Désactivé')}
       ${seg('dinmode', ['diotic', 'anti'], s.dinAntiphasic ? 'anti' : 'diotic', v => v === 'anti' ? 'Antiphasique' : 'Diotique')}
+      ${seg('dinvoice', ['homme', 'femme', 'auto'], s.dinVoice || 'auto', v => ({ homme: 'Voix d\u2019homme', femme: 'Voix de femme', auto: 'Alterner' }[v]))}
       <span class="soft small">Seuil d'orientation (RSB, à valider) : <input type="number" step="0.5" id="din-cut" value="${s.dinReferSrt ?? -7}" style="width:7em"> dB</span></div>`;
   bindSeg(m, 'level', v => { saveSet({ levelHL: +v }); $('#eff500').textContent = S.settings.levelHL + S.settings.extra500; });
   bindSeg(m, 'extra500', v => { saveSet({ extra500: +v }); $('#eff500').textContent = S.settings.levelHL + S.settings.extra500; });
@@ -460,6 +465,7 @@ function tabSettings(m) {
   bindSeg(m, 'daily', v => saveSet({ dailyCheck: v === 'on' }));
   bindSeg(m, 'din', v => saveSet({ dinEnabled: v === 'on' }));
   bindSeg(m, 'dinmode', v => saveSet({ dinAntiphasic: v === 'anti' }));
+  bindSeg(m, 'dinvoice', v => saveSet({ dinVoice: v }));
   $('#din-cut', m).addEventListener('change', e => saveSet({ dinReferSrt: +e.target.value }));
 }
 
@@ -718,13 +724,15 @@ function tabToday(m) {
 }
 
 // ---------- À propos
-function tabAbout(m) {
+async function tabAbout(m) {
+  const man = await dinManifest();
+  const voices = man?.voices ? Object.values(man.voices).map(v => `<li>${esc(v.credit)}</li>`).join('') : '';
   m.innerHTML = `<h2>À propos</h2>
     <p><b>${APP.name} – ${APP.fullName}</b> · version ${APP.version}</p>
     <p>Conception et réalisation : <b>Joseph-Marie Simonetti – Weave</b>. © 2026. Tous droits réservés. Reproduction, copie ou extraction interdites.</p>
     <p class="small soft" style="margin-top:1em">Outil interne de sensibilisation à l'audition. Il ne constitue pas un examen médical et ne remplace pas un bilan auditif réalisé par un audioprothésiste.</p>
     <h3 style="margin-top:1.5em">Logiciels utilisés</h3>
-    <ul class="small"><li>Capacitor – Ionic (licence MIT)</li><li>Android – AOSP (licence Apache 2.0)</li><li>Web Audio API (moteur audio du système)</li></ul>`;
+    <ul class="small"><li>Capacitor – Ionic (licence MIT)</li><li>Android – AOSP (licence Apache 2.0)</li><li>Web Audio API (moteur audio du système)</li><li>Piper – Rhasspy (licence MIT)</li>${voices}</ul>`;
 }
 
 boot();

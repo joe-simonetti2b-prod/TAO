@@ -7,18 +7,27 @@ import { getContext } from './audio.js';
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-export async function dinAvailable() {
+export async function dinManifest() {
   try {
     const r = await fetch('din/manifest.json', { cache: 'no-store' });
-    if (!r.ok) return false;
-    const m = await r.json();
-    return !!(m && m.digits && m.noise);
-  } catch { return false; }
+    return r.ok ? await r.json() : null;
+  } catch { return null; }
+}
+
+export async function dinAvailable(voice) {
+  const m = await dinManifest();
+  return !!(m && m.voices && m.voices[voice] && m.voices[voice].noise);
+}
+
+// 'auto' : alterne homme / femme d'un test à l'autre
+export function resolveVoice(setting, lastVoice) {
+  if (setting === 'homme' || setting === 'femme') return setting;
+  return lastVoice === 'homme' ? 'femme' : 'homme';
 }
 
 export class DinTest {
   /**
-   * o: { calib, antiphasic (bool), hooks: { onTriplet(i, total), askAnswer(): Promise<string> } }
+   * o: { calib, voice ('homme'|'femme'), antiphasic (bool), hooks: { onTriplet(i, total), askAnswer(): Promise<string> } }
    */
   constructor(o) {
     this.o = o; this.aborted = false;
@@ -28,7 +37,9 @@ export class DinTest {
 
   async load() {
     const c = getContext();
-    const m = await (await fetch('din/manifest.json')).json();
+    const all = await (await fetch('din/manifest.json')).json();
+    const m = all.voices[this.o.voice];
+    if (!m) throw new Error('Voix indisponible');
     const dec = async url => c.decodeAudioData(await (await fetch('din/' + url)).arrayBuffer());
     this.digits = {};
     for (const [d, files] of Object.entries(m.digits)) this.digits[d] = await Promise.all(files.map(dec));
@@ -36,7 +47,7 @@ export class DinTest {
     // Niveau de bruit fixe ≈ 55 dB HL rapporté à l'étalonnage 1 kHz (moyenne des deux oreilles)
     const r = this.o.calib?.ref;
     const ref1k = r ? ((r.R?.[1000] ?? -90) + (r.L?.[1000] ?? -90)) / 2 : -90;
-    this.noiseDbfs = Math.min(-12, ref1k + 55 + (m.noiseCalibOffset || 0));
+    this.noiseDbfs = Math.min(-12, ref1k + 55);
     this.speechRmsDb = m.speechRmsDb ?? -20; // RMS des enregistrements (dBFS)
     this.noiseRmsDb = m.noiseRmsDb ?? -20;
   }
@@ -54,8 +65,11 @@ export class DinTest {
   async playTriplet(triplet, snr) {
     const c = getContext();
     const t0 = c.currentTime + 0.1;
-    const noiseGain = Math.pow(10, (this.noiseDbfs - this.noiseRmsDb) / 20);
-    const speechGain = Math.pow(10, (this.noiseDbfs + snr - this.speechRmsDb) / 20);
+    // Garde-fou anti-saturation : crête voix ≈ RMS + 14 dB et crête bruit ≈ RMS + 12 dB doivent rester sous −1 dBFS.
+    // Si besoin, voix ET bruit baissent ensemble : le rapport signal/bruit est conservé.
+    const excess = Math.max(0, this.noiseDbfs + snr + 14 + 1, this.noiseDbfs + 12 + 1);
+    const noiseGain = Math.pow(10, (this.noiseDbfs - excess - this.noiseRmsDb) / 20);
+    const speechGain = Math.pow(10, (this.noiseDbfs - excess + snr - this.speechRmsDb) / 20);
     // Durée : 0,5 s de bruit, chiffres espacés de 0,3 s, 0,5 s de bruit
     let t = t0 + 0.5;
     const nodes = [];
@@ -104,6 +118,6 @@ export class DinTest {
     if (this.aborted) return { aborted: true };
     const used = track.slice(4).map(t => t.snr).concat([snr]);
     const srt = used.reduce((a, b) => a + b, 0) / used.length;
-    return { aborted: false, srt: Math.round(srt * 10) / 10, track, antiphasic: !!this.o.antiphasic };
+    return { aborted: false, srt: Math.round(srt * 10) / 10, track, antiphasic: !!this.o.antiphasic, voice: this.o.voice };
   }
 }

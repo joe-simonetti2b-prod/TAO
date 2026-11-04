@@ -134,13 +134,13 @@ export function setDailyCheck(ok, advisor) {
 export function resultsToCSV(results) {
   const head = ['fiche', 'date', 'magasin', 'conseiller', 'niveau_dBHL', 'type_son',
     ...FREQUENCIES.map(f => `OD_${f}`), ...FREQUENCIES.map(f => `OG_${f}`),
-    'faux_positifs', 'fiable', 'resultat', 'oriente', 'din_srt'];
+    'faux_positifs', 'fiable', 'resultat', 'oriente', 'din_srt', 'din_voix', 'din_mode'];
   const rows = results.map(r => [
     r.fiche, r.date, r.store, r.advisor, r.levelHL, r.stimulusType,
     ...FREQUENCIES.map(f => r.tone?.R?.[f]?.heard === true ? 'oui' : r.tone?.R?.[f]?.heard === false ? 'non' : ''),
     ...FREQUENCIES.map(f => r.tone?.L?.[f]?.heard === true ? 'oui' : r.tone?.L?.[f]?.heard === false ? 'non' : ''),
     r.falsePositives, r.reliable ? 'oui' : 'non', r.outcome, r.referred ? 'oui' : 'non',
-    r.din?.srt ?? '',
+    r.din?.srt ?? '', r.din?.voice ?? '', r.din ? (r.din.antiphasic ? 'antiphasique' : 'diotique') : '',
   ]);
   return [head, ...rows].map(row => row.map(v => `"${String(v ?? '').replace(/"/g, '""')}"`).join(';')).join('\n');
 }

@@ -14,15 +14,20 @@ jobs:
       KS: ${{ secrets.TAO_KEYSTORE_B64 }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - id: node
+        uses: actions/setup-node@v4
         with: { node-version: 22 }
-      - uses: actions/setup-java@v4
+      - id: java
+        uses: actions/setup-java@v4
         with: { distribution: temurin, java-version: 21 }
-      - uses: android-actions/setup-android@v3
-      - name: Keystore (si configuré)
+      - id: android
+        uses: android-actions/setup-android@v3
+      - id: keystore
+        name: Keystore (si configuré)
         if: env.KS != ''
         run: echo "$KS" | base64 -d > $RUNNER_TEMP/tao.jks && echo "TAO_KEYSTORE=$RUNNER_TEMP/tao.jks" >> $GITHUB_ENV
-      - name: Build
+      - id: build
+        name: Build
         env:
           TAO_KEYSTORE_PASSWORD: ${{ secrets.TAO_KEYSTORE_PASSWORD }}
           TAO_KEY_ALIAS: ${{ secrets.TAO_KEY_ALIAS }}
@@ -46,6 +51,7 @@ jobs:
         run: |
           mkdir -p status
           echo "run=${{ github.run_number }} commit=${{ github.sha }} job=${{ job.status }} date=$(date -u +%FT%TZ)" > status/STATUS.txt
+          echo "node=${{ steps.node.outcome }} java=${{ steps.java.outcome }} android=${{ steps.android.outcome }} keystore=${{ steps.keystore.outcome }} build=${{ steps.build.outcome }}" >> status/STATUS.txt
           tail -c 80000 ci.log > status/ci_tail.log 2>/dev/null || echo "pas de log" > status/ci_tail.log
           cd status && git init -q -b ci-status && git config user.name tao-ci && git config user.email ci@tao.local
           git add -A && git commit -qm "Statut run ${{ github.run_number }}"

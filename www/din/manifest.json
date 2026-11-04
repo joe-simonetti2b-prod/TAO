@@ -1,0 +1,121 @@
+{
+ "version": 1,
+ "voices": {
+  "homme": {
+   "digits": {
+    "0": [
+     "homme/0_0.wav",
+     "homme/0_1.wav",
+     "homme/0_2.wav"
+    ],
+    "1": [
+     "homme/1_0.wav",
+     "homme/1_1.wav",
+     "homme/1_2.wav"
+    ],
+    "2": [
+     "homme/2_0.wav",
+     "homme/2_1.wav",
+     "homme/2_2.wav"
+    ],
+    "3": [
+     "homme/3_0.wav",
+     "homme/3_1.wav",
+     "homme/3_2.wav"
+    ],
+    "4": [
+     "homme/4_0.wav",
+     "homme/4_1.wav",
+     "homme/4_2.wav"
+    ],
+    "5": [
+     "homme/5_0.wav",
+     "homme/5_1.wav",
+     "homme/5_2.wav"
+    ],
+    "6": [
+     "homme/6_0.wav",
+     "homme/6_1.wav",
+     "homme/6_2.wav"
+    ],
+    "7": [
+     "homme/7_0.wav",
+     "homme/7_1.wav",
+     "homme/7_2.wav"
+    ],
+    "8": [
+     "homme/8_0.wav",
+     "homme/8_1.wav",
+     "homme/8_2.wav"
+    ],
+    "9": [
+     "homme/9_0.wav",
+     "homme/9_1.wav",
+     "homme/9_2.wav"
+    ]
+   },
+   "noise": "homme/noise.wav",
+   "speechRmsDb": -20.0,
+   "noiseRmsDb": -20.0,
+   "credit": "Voix « Pierre » – Piper fr_FR-upmc (données UPMC/MaryTTS, licence CC-BY-SA 4.0)"
+  },
+  "femme": {
+   "digits": {
+    "0": [
+     "femme/0_0.wav",
+     "femme/0_1.wav",
+     "femme/0_2.wav"
+    ],
+    "1": [
+     "femme/1_0.wav",
+     "femme/1_1.wav",
+     "femme/1_2.wav"
+    ],
+    "2": [
+     "femme/2_0.wav",
+     "femme/2_1.wav",
+     "femme/2_2.wav"
+    ],
+    "3": [
+     "femme/3_0.wav",
+     "femme/3_1.wav",
+     "femme/3_2.wav"
+    ],
+    "4": [
+     "femme/4_0.wav",
+     "femme/4_1.wav",
+     "femme/4_2.wav"
+    ],
+    "5": [
+     "femme/5_0.wav",
+     "femme/5_1.wav",
+     "femme/5_2.wav"
+    ],
+    "6": [
+     "femme/6_0.wav",
+     "femme/6_1.wav",
+     "femme/6_2.wav"
+    ],
+    "7": [
+     "femme/7_0.wav",
+     "femme/7_1.wav",
+     "femme/7_2.wav"
+    ],
+    "8": [
+     "femme/8_0.wav",
+     "femme/8_1.wav",
+     "femme/8_2.wav"
+    ],
+    "9": [
+     "femme/9_0.wav",
+     "femme/9_1.wav",
+     "femme/9_2.wav"
+    ]
+   },
+   "noise": "femme/noise.wav",
+   "speechRmsDb": -20.0,
+   "noiseRmsDb": -20.0,
+   "credit": "Voix « SIWIS » – Piper fr_FR-siwis (données SIWIS, Université d’Édimbourg, licence CC-BY 4.0)"
+  }
+ }
+}
