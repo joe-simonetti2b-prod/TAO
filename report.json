@@ -1,0 +1,552 @@
+{
+ "generation": {
+  "femme_siwis": {
+   "license": "CC-BY 4.0",
+   "speaker_id": null
+  },
+  "femme_upmc_jessica": {
+   "license": "CC-BY-SA 4.0",
+   "speaker_id": 0
+  },
+  "homme_upmc_pierre": {
+   "license": "CC-BY-SA 4.0",
+   "speaker_id": 1
+  },
+  "mls_1840": {
+   "license": "CC-BY 4.0",
+   "speaker_id": 0
+  },
+  "mls_3698": {
+   "license": "CC-BY 4.0",
+   "speaker_id": 1
+  },
+  "mls_123": {
+   "license": "CC-BY 4.0",
+   "speaker_id": 2
+  },
+  "mls_1474": {
+   "license": "CC-BY 4.0",
+   "speaker_id": 3
+  },
+  "mls_12709": {
+   "license": "CC-BY 4.0",
+   "speaker_id": 4
+  },
+  "mls_7423": {
+   "license": "CC-BY 4.0",
+   "speaker_id": 5
+  },
+  "mls_9242": {
+   "license": "CC-BY 4.0",
+   "speaker_id": 6
+  },
+  "mls_8778": {
+   "license": "CC-BY 4.0",
+   "speaker_id": 7
+  },
+  "mls_3060": {
+   "license": "CC-BY 4.0",
+   "speaker_id": 8
+  },
+  "mls_4512": {
+   "license": "CC-BY 4.0",
+   "speaker_id": 9
+  },
+  "mls_6249": {
+   "license": "CC-BY 4.0",
+   "speaker_id": 10
+  },
+  "mls_12541": {
+   "license": "CC-BY 4.0",
+   "speaker_id": 11
+  }
+ },
+ "evaluation": {
+  "femme_siwis": {
+   "calme_%": 60.0,
+   "rsb0_%": 5.0,
+   "rsb-4_%": 0.0,
+   "f0_Hz": 181.0,
+   "n": 20,
+   "erreurs_calme": [
+    "0_0.wav:calme→érou",
+    "0_1.wav:calme→érou",
+    "1_0.wav:calme→ah.",
+    "1_1.wav:calme→ah.",
+    "5_1.wav:calme→sainte.",
+    "7_1.wav:calme→z.",
+    "8_0.wav:calme→eite !",
+    "8_1.wav:calme→it !"
+   ]
+  },
+  "femme_upmc_jessica": {
+   "calme_%": 5.0,
+   "rsb0_%": 0.0,
+   "rsb-4_%": 0.0,
+   "f0_Hz": 224.0,
+   "n": 20,
+   "erreurs_calme": [
+    "0_0.wav:calme→",
+    "0_1.wav:calme→bien.",
+    "1_1.wav:calme→...",
+    "2_0.wav:calme→",
+    "2_1.wav:calme→...",
+    "3_0.wav:calme→le...",
+    "3_1.wav:calme→ouais.",
+    "4_0.wav:calme→r",
+    "4_1.wav:calme→un.",
+    "5_0.wav:calme→...",
+    "5_1.wav:calme→c'est...",
+    "6_0.wav:calme→"
+   ]
+  },
+  "homme_upmc_pierre": {
+   "calme_%": 10.0,
+   "rsb0_%": 5.0,
+   "rsb-4_%": 0.0,
+   "f0_Hz": 119.0,
+   "n": 20,
+   "erreurs_calme": [
+    "0_0.wav:calme→faites-le.",
+    "0_1.wav:calme→fille.",
+    "1_0.wav:calme→e",
+    "1_1.wav:calme→ah.",
+    "2_0.wav:calme→rue.",
+    "2_1.wav:calme→leuuf.",
+    "3_0.wav:calme→pouvez-vous?",
+    "3_1.wav:calme→c'est bon.",
+    "4_0.wav:calme→t'as...",
+    "4_1.wav:calme→tair.",
+    "5_0.wav:calme→c'est...",
+    "5_1.wav:calme→so."
+   ]
+  },
+  "mls_1840": {
+   "calme_%": 5.0,
+   "rsb0_%": 5.0,
+   "rsb-4_%": 5.0,
+   "f0_Hz": 102.0,
+   "n": 20,
+   "erreurs_calme": [
+    "0_0.wav:calme→je vais y aller.",
+    "0_1.wav:calme→au re-dru, boss.",
+    "1_0.wav:calme→oh, oh.",
+    "1_1.wav:calme→heu...",
+    "2_0.wav:calme→c'est le seul.",
+    "3_0.wav:calme→oh, je suis...",
+    "3_1.wav:calme→c'est pas grave ça.",
+    "4_0.wav:calme→c'est un peu sûr.",
+    "4_1.wav:calme→tant, il se fait pas.",
+    "5_0.wav:calme→et voilà.",
+    "5_1.wav:calme→et vous ? et vous ?",
+    "6_0.wav:calme→c'est..."
+   ]
+  },
+  "mls_3698": {
+   "calme_%": 5.0,
+   "rsb0_%": 5.0,
+   "rsb-4_%": 0.0,
+   "f0_Hz": 162.0,
+   "n": 20,
+   "erreurs_calme": [
+    "0_0.wav:calme→plus un, plus un.",
+    "0_1.wav:calme→et ça va, il a saut.",
+    "1_0.wav:calme→générique",
+    "1_1.wav:calme→ah, eh, ah, eh.",
+    "2_1.wav:calme→...",
+    "3_0.wav:calme→c'est pas aussi de ça.",
+    "3_1.wav:calme→merci, au fait, à la prochaine.",
+    "4_0.wav:calme→c'est un super.",
+    "4_1.wav:calme→c'est super.",
+    "5_0.wav:calme→c'est assez, assez.",
+    "5_1.wav:calme→maman, c'est bon, on va faire ça.",
+    "6_0.wav:calme→vous avez un truc à faire ?"
+   ]
+  },
+  "mls_123": {
+   "calme_%": 0.0,
+   "rsb0_%": 10.0,
+   "rsb-4_%": 10.0,
+   "f0_Hz": 159.0,
+   "n": 20,
+   "erreurs_calme": [
+    "0_0.wav:calme→un, deux, trois, quatre, cinq, six, cinq.",
+    "0_1.wav:calme→nous allons dans l'assassin du...",
+    "1_0.wav:calme→buh-buh-buh-buh.",
+    "1_1.wav:calme→...",
+    "2_0.wav:calme→si, on se sent.",
+    "2_1.wav:calme→et ça...",
+    "3_0.wav:calme→mais, c'est...",
+    "3_1.wav:calme→salut !",
+    "4_0.wav:calme→et ça, oui, merci.",
+    "4_1.wav:calme→le genre, il n'y était pas.",
+    "5_0.wav:calme→je sais pas, je sais pas.",
+    "5_1.wav:calme→et là, c'est... ah, sorry."
+   ]
+  },
+  "mls_1474": {
+   "calme_%": 5.0,
+   "rsb0_%": 10.0,
+   "rsb-4_%": 5.0,
+   "f0_Hz": 202.0,
+   "n": 20,
+   "erreurs_calme": [
+    "0_0.wav:calme→je suis désolé. oh, c'est bon.",
+    "0_1.wav:calme→l'esprit, on se dit, salut !",
+    "1_1.wav:calme→alors, ben, bye !",
+    "2_0.wav:calme→c'est parfait.",
+    "2_1.wav:calme→il a l'air lous, il a lous, il a lous.",
+    "3_0.wav:calme→c'est pas ça.",
+    "3_1.wav:calme→ah oui ça, au revoir un fou, au revoir un frais.",
+    "4_0.wav:calme→il s'est fait le cire.",
+    "4_1.wav:calme→et c'est un zéro et une zéro et une zéro et une zéro et une zéro et une zéro et une zéro et une zéro et une zéro et une zéro et une zéro et une zéro et une zéro et une zéro et une zéro et une zéro et une zéro et une zéro et une zéro et une zéro et une zéro et une zéro et une zéro et une zéro et une zéro et une zéro et une zéro et une zéro et une zéro et une zéro et une zéro et une zéro et une zéro et une zéro et une zéro et une zéro et une zéro et une zéro et une zéro et une zéro et une zéro et une zéro et une zéro et une zéro et une zéro et une zéro et une zéro et une zéro et une zéro et une zéro et une zéro et une zéro et une zéro et une zéro et une zéro",
+    "5_0.wav:calme→c'est parti, salut !",
+    "5_1.wav:calme→oui, c'est ça.",
+    "6_0.wav:calme→bà la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la la"
+   ]
+  },
+  "mls_12709": {
+   "calme_%": 5.0,
+   "rsb0_%": 0.0,
+   "rsb-4_%": 5.0,
+   "f0_Hz": 174.0,
+   "n": 20,
+   "erreurs_calme": [
+    "0_0.wav:calme→c'est pas ça.",
+    "0_1.wav:calme→vous savez bien ça, parfait.",
+    "1_0.wav:calme→et voilà !",
+    "1_1.wav:calme→ah ben.",
+    "2_0.wav:calme→c'est...",
+    "3_0.wav:calme→c'est bon.",
+    "3_1.wav:calme→c'est un peu plus grand.",
+    "4_0.wav:calme→le sang et le souverain.",
+    "4_1.wav:calme→ça fait plus.",
+    "5_0.wav:calme→de séparer le temps.",
+    "5_1.wav:calme→je fais ça.",
+    "6_0.wav:calme→je vais vous dire que..."
+   ]
+  },
+  "mls_7423": {
+   "calme_%": 0.0,
+   "rsb0_%": 0.0,
+   "rsb-4_%": 5.0,
+   "f0_Hz": 85.0,
+   "n": 20,
+   "erreurs_calme": [
+    "0_0.wav:calme→ça a fait, a fait.",
+    "0_1.wav:calme→et ça, par le bâtiment.",
+    "1_0.wav:calme→ah... ah...",
+    "1_1.wav:calme→voilà.",
+    "2_0.wav:calme→ah, ça va, c'est dur.",
+    "2_1.wav:calme→je vous le dis.",
+    "3_0.wav:calme→et, à vous, à ça, à vous.",
+    "3_1.wav:calme→c'est à chier.",
+    "4_0.wav:calme→c'est un peu...",
+    "4_1.wav:calme→s'il y a...",
+    "5_0.wav:calme→ah, ça s'en va.",
+    "5_1.wav:calme→c'est un arche. un arche, ça le le."
+   ]
+  },
+  "mls_9242": {
+   "calme_%": 0.0,
+   "rsb0_%": 0.0,
+   "rsb-4_%": 5.0,
+   "f0_Hz": 85.0,
+   "n": 20,
+   "erreurs_calme": [
+    "0_0.wav:calme→je bosse, bosse.",
+    "0_1.wav:calme→so, ah oui, ah c'est...",
+    "1_0.wav:calme→oh la barche.",
+    "1_1.wav:calme→...",
+    "2_0.wav:calme→zé, sorry.",
+    "2_1.wav:calme→euret.",
+    "3_0.wav:calme→c'est bon, je suis pas sourd.",
+    "3_1.wav:calme→je suis désolé.",
+    "4_0.wav:calme→c'est bon.",
+    "4_1.wav:calme→et ça, il est assez parrain.",
+    "5_0.wav:calme→c'est pas du pas de ça.",
+    "5_1.wav:calme→tu as... ...doué."
+   ]
+  },
+  "mls_8778": {
+   "calme_%": 0.0,
+   "rsb0_%": 5.0,
+   "rsb-4_%": 5.0,
+   "f0_Hz": 134.0,
+   "n": 20,
+   "erreurs_calme": [
+    "0_0.wav:calme→ça a répliqué.",
+    "0_1.wav:calme→je vais avoir du... ...ceau.",
+    "1_0.wav:calme→le froid.",
+    "1_1.wav:calme→et le zikar.",
+    "2_0.wav:calme→c'est un peu chou.",
+    "2_1.wav:calme→c'est ça, c'est ça.",
+    "3_0.wav:calme→c'est un j'ai pas sauté.",
+    "3_1.wav:calme→tu as pas le temps de faire ça ?",
+    "4_0.wav:calme→2, 1, 2, 3, 4, 5, 6, 7, 8, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9",
+    "4_1.wav:calme→c'est ça qui est le zéro.",
+    "5_0.wav:calme→c'est pas un épazone.",
+    "5_1.wav:calme→c'est ça, c'est ça."
+   ]
+  },
+  "mls_3060": {
+   "calme_%": 0.0,
+   "rsb0_%": 0.0,
+   "rsb-4_%": 0.0,
+   "f0_Hz": 145.0,
+   "n": 20,
+   "erreurs_calme": [
+    "0_0.wav:calme→il va ? ah, je vais.",
+    "0_1.wav:calme→et ça, bye !",
+    "1_0.wav:calme→ah, ça va.",
+    "1_1.wav:calme→non, non, non, non.",
+    "2_0.wav:calme→non, non, non.",
+    "2_1.wav:calme→un, deux, trois.",
+    "3_0.wav:calme→et ça, à la fin.",
+    "3_1.wav:calme→c'est un peu fort.",
+    "4_0.wav:calme→c'est ça, les gars.",
+    "4_1.wav:calme→3, 2, 1...",
+    "5_0.wav:calme→c'est pas ça.",
+    "5_1.wav:calme→c'est pas possible."
+   ]
+  },
+  "mls_4512": {
+   "calme_%": 0.0,
+   "rsb0_%": 10.0,
+   "rsb-4_%": 0.0,
+   "f0_Hz": 159.0,
+   "n": 20,
+   "erreurs_calme": [
+    "0_0.wav:calme→c'est ça, je suis assaille.",
+    "0_1.wav:calme→ça, j'ai pas l'air de faire ça.",
+    "1_0.wav:calme→et... et pas.",
+    "1_1.wav:calme→etrapelle, haï.",
+    "2_0.wav:calme→c'est le verre.",
+    "2_1.wav:calme→merci, c'est vrai.",
+    "3_0.wav:calme→je vous ai offert de l'aise.",
+    "3_1.wav:calme→je vais en faire une.",
+    "4_0.wav:calme→et c'est le plus grand.",
+    "4_1.wav:calme→une heure et cinq, deux, trois, four.",
+    "5_0.wav:calme→c'est assis, assis.",
+    "5_1.wav:calme→c'est pas f... vra..."
+   ]
+  },
+  "mls_6249": {
+   "calme_%": 0.0,
+   "rsb0_%": 5.0,
+   "rsb-4_%": 0.0,
+   "f0_Hz": 105.0,
+   "n": 20,
+   "erreurs_calme": [
+    "0_0.wav:calme→et ça, il va se...",
+    "0_1.wav:calme→c'est ça, ça va.",
+    "1_0.wav:calme→et les bars, là-haut.",
+    "1_1.wav:calme→et...",
+    "2_0.wav:calme→je vais le faire.",
+    "2_1.wav:calme→c'est la vie, c'est la sa.",
+    "3_0.wav:calme→je vais me suivre, parmi, et parmi,",
+    "3_1.wav:calme→et c'est... ah oui, bah...",
+    "4_0.wav:calme→et ça fait pas de mal.",
+    "4_1.wav:calme→c'est ça, c'est...",
+    "5_0.wav:calme→s'il vous plait, parait.",
+    "5_1.wav:calme→et c'est parfait. bye."
+   ]
+  },
+  "mls_12541": {
+   "calme_%": 0.0,
+   "rsb0_%": 5.0,
+   "rsb-4_%": 0.0,
+   "f0_Hz": 180.0,
+   "n": 20,
+   "erreurs_calme": [
+    "0_0.wav:calme→non, pas de chouette.",
+    "0_1.wav:calme→le sucre doit être à 5h.",
+    "1_0.wav:calme→oui.",
+    "1_1.wav:calme→et voilà, on va se faire.",
+    "2_0.wav:calme→3, 12.",
+    "2_1.wav:calme→et faute.",
+    "3_0.wav:calme→bye bye.",
+    "3_1.wav:calme→vous avez vu ? faut pas.",
+    "4_0.wav:calme→je vous en ai dit, merci beaucoup.",
+    "4_1.wav:calme→et ça va être super.",
+    "5_0.wav:calme→je ne sais pas.",
+    "5_1.wav:calme→bonne journée."
+   ]
+  },
+  "APPLI_v01_homme": {
+   "calme_%": 5.0,
+   "rsb0_%": 0.0,
+   "rsb-4_%": 0.0,
+   "f0_Hz": 118.0,
+   "n": 20,
+   "erreurs_calme": [
+    "0_0.wav:calme→...",
+    "0_1.wav:calme→diffres.",
+    "1_0.wav:calme→ouais.",
+    "1_1.wav:calme→ah.",
+    "2_0.wav:calme→z.",
+    "2_1.wav:calme→...",
+    "3_0.wav:calme→bye bye.",
+    "3_1.wav:calme→je vais le faire.",
+    "4_0.wav:calme→tais.",
+    "4_1.wav:calme→piss.",
+    "5_0.wav:calme→so.",
+    "5_1.wav:calme→so."
+   ]
+  },
+  "APPLI_v01_femme": {
+   "calme_%": 65.0,
+   "rsb0_%": 0.0,
+   "rsb-4_%": 5.0,
+   "f0_Hz": 190.0,
+   "n": 20,
+   "erreurs_calme": [
+    "0_0.wav:calme→téro",
+    "1_1.wav:calme→ah.",
+    "2_1.wav:calme→je...",
+    "5_0.wav:calme→sainte.",
+    "5_1.wav:calme→sainte.",
+    "7_1.wav:calme→c'est.",
+    "8_1.wav:calme→eite !"
+   ]
+  }
+ },
+ "classement": [
+  {
+   "voix": "APPLI_v01_femme",
+   "calme_%": 65.0,
+   "rsb0_%": 0.0,
+   "rsb-4_%": 5.0,
+   "f0_Hz": 190.0,
+   "n": 20
+  },
+  {
+   "voix": "femme_siwis",
+   "calme_%": 60.0,
+   "rsb0_%": 5.0,
+   "rsb-4_%": 0.0,
+   "f0_Hz": 181.0,
+   "n": 20
+  },
+  {
+   "voix": "mls_123",
+   "calme_%": 0.0,
+   "rsb0_%": 10.0,
+   "rsb-4_%": 10.0,
+   "f0_Hz": 159.0,
+   "n": 20
+  },
+  {
+   "voix": "mls_1474",
+   "calme_%": 5.0,
+   "rsb0_%": 10.0,
+   "rsb-4_%": 5.0,
+   "f0_Hz": 202.0,
+   "n": 20
+  },
+  {
+   "voix": "homme_upmc_pierre",
+   "calme_%": 10.0,
+   "rsb0_%": 5.0,
+   "rsb-4_%": 0.0,
+   "f0_Hz": 119.0,
+   "n": 20
+  },
+  {
+   "voix": "mls_1840",
+   "calme_%": 5.0,
+   "rsb0_%": 5.0,
+   "rsb-4_%": 5.0,
+   "f0_Hz": 102.0,
+   "n": 20
+  },
+  {
+   "voix": "mls_3698",
+   "calme_%": 5.0,
+   "rsb0_%": 5.0,
+   "rsb-4_%": 0.0,
+   "f0_Hz": 162.0,
+   "n": 20
+  },
+  {
+   "voix": "mls_12709",
+   "calme_%": 5.0,
+   "rsb0_%": 0.0,
+   "rsb-4_%": 5.0,
+   "f0_Hz": 174.0,
+   "n": 20
+  },
+  {
+   "voix": "mls_8778",
+   "calme_%": 0.0,
+   "rsb0_%": 5.0,
+   "rsb-4_%": 5.0,
+   "f0_Hz": 134.0,
+   "n": 20
+  },
+  {
+   "voix": "mls_4512",
+   "calme_%": 0.0,
+   "rsb0_%": 10.0,
+   "rsb-4_%": 0.0,
+   "f0_Hz": 159.0,
+   "n": 20
+  },
+  {
+   "voix": "femme_upmc_jessica",
+   "calme_%": 5.0,
+   "rsb0_%": 0.0,
+   "rsb-4_%": 0.0,
+   "f0_Hz": 224.0,
+   "n": 20
+  },
+  {
+   "voix": "mls_7423",
+   "calme_%": 0.0,
+   "rsb0_%": 0.0,
+   "rsb-4_%": 5.0,
+   "f0_Hz": 85.0,
+   "n": 20
+  },
+  {
+   "voix": "mls_9242",
+   "calme_%": 0.0,
+   "rsb0_%": 0.0,
+   "rsb-4_%": 5.0,
+   "f0_Hz": 85.0,
+   "n": 20
+  },
+  {
+   "voix": "mls_6249",
+   "calme_%": 0.0,
+   "rsb0_%": 5.0,
+   "rsb-4_%": 0.0,
+   "f0_Hz": 105.0,
+   "n": 20
+  },
+  {
+   "voix": "mls_12541",
+   "calme_%": 0.0,
+   "rsb0_%": 5.0,
+   "rsb-4_%": 0.0,
+   "f0_Hz": 180.0,
+   "n": 20
+  },
+  {
+   "voix": "APPLI_v01_homme",
+   "calme_%": 5.0,
+   "rsb0_%": 0.0,
+   "rsb-4_%": 0.0,
+   "f0_Hz": 118.0,
+   "n": 20
+  },
+  {
+   "voix": "mls_3060",
+   "calme_%": 0.0,
+   "rsb0_%": 0.0,
+   "rsb-4_%": 0.0,
+   "f0_Hz": 145.0,
+   "n": 20
+  }
+ ]
+}
