@@ -9,12 +9,15 @@ permissions:
 jobs:
   voices:
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: { python-version: '3.10' }
       - name: Piper
-        run: pip install "piper-tts==1.2.0" 2>&1 | tee pip.log
+        run: |
+          pip install torch --index-url https://download.pytorch.org/whl/cpu 2>&1 | tail -2 | tee pip.log
+          pip install "piper-tts==1.2.0" openai-whisper scipy numpy 2>&1 | tail -3 | tee -a pip.log
       - name: Génération
         run: python tools/voices/generate.py 2>&1 | tee gen.log
       - name: Publier sur la branche voices-raw
