@@ -4,6 +4,7 @@ permissions:
 on:
   push:
     branches: [ main ]
+    paths-ignore: [ 'tools/voices/**', '.github/workflows/voices.yml' ]
   workflow_dispatch:
 
 jobs:
@@ -18,39 +19,20 @@ jobs:
       - uses: actions/setup-java@v4
         with: { distribution: temurin, java-version: 21 }
       - uses: android-actions/setup-android@v3
-      - name: Dépendances
-        run: npm ci || npm install
-      - name: Web (obfusqué) + synchronisation Android
-        run: npm run sync
-      - name: APK de phase test (debug)
-        run: cd android && chmod +x gradlew && set -o pipefail && ./gradlew assembleDebug --no-daemon 2>&1 | tee ../build.log
       - name: Keystore (si configuré)
         if: env.KS != ''
         run: echo "$KS" | base64 -d > $RUNNER_TEMP/tao.jks && echo "TAO_KEYSTORE=$RUNNER_TEMP/tao.jks" >> $GITHUB_ENV
-      - name: APK de production (release signé, minifié)
-        if: env.TAO_KEYSTORE != ''
+      - name: Build
         env:
           TAO_KEYSTORE_PASSWORD: ${{ secrets.TAO_KEYSTORE_PASSWORD }}
           TAO_KEY_ALIAS: ${{ secrets.TAO_KEY_ALIAS }}
           TAO_KEY_PASSWORD: ${{ secrets.TAO_KEY_PASSWORD }}
-        run: cd android && ./gradlew assembleRelease --no-daemon
+        run: bash tools/ci/build.sh 2>&1 | tee ci.log
       - uses: actions/upload-artifact@v4
+        if: success()
         with:
           name: TAO-apk-${{ github.run_number }}
-          path: |
-            android/app/build/outputs/apk/debug/*.apk
-            android/app/build/outputs/apk/release/*.apk
-          if-no-files-found: warn
-      - name: Statut du build (branche ci-status)
-        if: always()
-        run: |
-          mkdir -p status && cp -f build.log status/ 2>/dev/null || true
-          echo "run=${{ github.run_number }} commit=${{ github.sha }} job=${{ job.status }} date=$(date -u +%FT%TZ)" > status/STATUS.txt
-          ls -la android/app/build/outputs/apk/*/ >> status/STATUS.txt 2>&1 || true
-          tail -c 60000 status/build.log > status/build_tail.log 2>/dev/null || true; rm -f status/build.log
-          cd status && git init -q -b ci-status && git config user.name tao-ci && git config user.email ci@tao.local
-          git add -A && git commit -qm "Statut run ${{ github.run_number }}"
-          git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}" ci-status
+          path: android/app/build/outputs/apk/**/*.apk
       - name: Publier l'APK de phase test (release « phase-test »)
         if: success()
         uses: softprops/action-gh-release@v2
@@ -59,3 +41,12 @@ jobs:
           name: TAO – phase test (build ${{ github.run_number }})
           prerelease: true
           files: android/app/build/outputs/apk/debug/app-debug.apk
+      - name: Statut du build (branche ci-status)
+        if: always()
+        run: |
+          mkdir -p status
+          echo "run=${{ github.run_number }} commit=${{ github.sha }} job=${{ job.status }} date=$(date -u +%FT%TZ)" > status/STATUS.txt
+          tail -c 80000 ci.log > status/ci_tail.log 2>/dev/null || echo "pas de log" > status/ci_tail.log
+          cd status && git init -q -b ci-status && git config user.name tao-ci && git config user.email ci@tao.local
+          git add -A && git commit -qm "Statut run ${{ github.run_number }}"
+          git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}" ci-status
