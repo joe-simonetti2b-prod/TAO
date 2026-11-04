@@ -1,0 +1,49 @@
+name: Voix v2 (triplets naturels + évaluation)
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths: [ 'tools/voices2/**', '.github/workflows/voices2.yml' ]
+permissions:
+  contents: write
+jobs:
+  voices:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    defaults: { run: { working-directory: tools/voices2 } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.10' }
+      - name: Outils système
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq espeak-ng ffmpeg
+      - name: Piper (voix de base + présélection MLS)
+        continue-on-error: true
+        run: |
+          python -m venv /tmp/vp && /tmp/vp/bin/pip install -q "piper-tts==1.2.0"
+          /tmp/vp/bin/python synth_piper.py base 2>&1 | tee -a ../../log.txt
+      - name: Kokoro
+        continue-on-error: true
+        run: |
+          python -m venv /tmp/vk && /tmp/vk/bin/pip install -q "kokoro>=0.9.4" soundfile "misaki[fr]" || /tmp/vk/bin/pip install -q "kokoro>=0.9.4" soundfile
+          /tmp/vk/bin/python synth_kokoro.py 2>&1 | tee -a ../../log.txt
+      - name: Évaluation (présélection)
+        continue-on-error: true
+        run: |
+          python -m venv /tmp/ve && /tmp/ve/bin/pip install -q faster-whisper soundfile scipy numpy
+          /tmp/ve/bin/python evaluate.py screen 2>&1 | tee -a ../../log.txt
+      - name: MLS complet + évaluation
+        continue-on-error: true
+        run: |
+          /tmp/vp/bin/python synth_piper.py mls_full 2>&1 | tee -a ../../log.txt
+          /tmp/ve/bin/python evaluate.py full 2>&1 | tee -a ../../log.txt
+      - name: Export
+        continue-on-error: true
+        run: /tmp/ve/bin/python export.py 2>&1 | tee -a ../../log.txt
+      - name: Publier sur la branche voices-v2
+        if: always()
+        run: |
+          mkdir -p out2 && cp ../../log.txt out2/ 2>/dev/null || true
+          cd out2 && git init -q -b voices-v2 && git config user.name tao-ci && git config user.email ci@tao.local
+          git add -A && git commit -qm "Voix v2 – run ${{ github.run_number }}"
+          git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}" voices-v2

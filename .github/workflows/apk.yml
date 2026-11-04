@@ -4,7 +4,7 @@ permissions:
 on:
   push:
     branches: [ main ]
-    paths-ignore: [ 'tools/voices/**', '.github/workflows/voices.yml' ]
+    paths-ignore: [ 'tools/voices/**', 'tools/voices2/**', '.github/workflows/voices.yml', '.github/workflows/voices2.yml' ]
   workflow_dispatch:
 
 jobs:
