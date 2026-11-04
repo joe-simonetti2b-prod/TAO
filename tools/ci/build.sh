@@ -8,5 +8,5 @@ npx cap sync android
 cd android
 chmod +x gradlew
 ./gradlew assembleDebug --no-daemon --stacktrace
-if [ -n "${TAO_KEYSTORE:-}" ]; then ./gradlew assembleRelease --no-daemon; fi
+./gradlew assembleRelease --no-daemon   # signé si la clé est configurée, sinon non signé (contrôle de la minification)
 ls -la app/build/outputs/apk/*/
