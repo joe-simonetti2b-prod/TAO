@@ -8,7 +8,7 @@ import * as device from './device.js';
 import { resume, playHL, playDbfs, playContinuous, NoiseMonitor, LevelError } from './audio.js';
 import { ToneTest } from './tonetest.js';
 import { DinTest, dinAvailable, dinManifest, resolveVoice } from './din.js';
-import { ICONS, themeIcon } from './icons.js';
+import { ICONS, MASCOT, themeIcon } from './icons.js';
 
 const $ = (s, el = document) => el.querySelector(s);
 const $$ = (s, el = document) => [...el.querySelectorAll(s)];
@@ -94,6 +94,9 @@ async function boot() {
   $('#logo-hold').innerHTML = `${ICONS.logo}<span>${APP.name}</span>`;
   $('#attract-icons').innerHTML = SORTED_F.map(f => `<div class="ic">${themeIcon(THEMES[f].key)}</div>`).join('');
   $('#headset-ic').innerHTML = ICONS.headset;
+  $('#attract-mascot').innerHTML = MASCOT.coucou;
+  $('#instr-mascot').innerHTML = MASCOT.ecoute;
+  $('#attract-brand').textContent = APP.brand;
   $('#attract-store').textContent = S.settings.storeName || '';
   demoFlag();
   if (S.settings.kiosk) device.startKiosk();
@@ -101,7 +104,7 @@ async function boot() {
 }
 
 function blocked(title, msg) {
-  $('#blocked-icon').innerHTML = ICONS.ear;
+  $('#blocked-icon').innerHTML = MASCOT.ecoute;
   $('#blocked-title').textContent = title;
   $('#blocked-msg').textContent = msg;
   show('s-blocked');
@@ -201,7 +204,7 @@ async function runTest() {
       onNoise: w => $('#noise-banner').classList.toggle('hidden', !w),
       onEarChange: async ear => {
         if (ear === EARS[0]) return;
-        $('#earchange-ic').innerHTML = ICONS.ok;
+        $('#earchange-ic').innerHTML = MASCOT.bravo;
         $('#earchange-title').textContent = `Bravo ! Passons à l'oreille ${EAR_LABEL[ear]}`;
         show('s-earchange'); await sleep(2600); show('s-test');
       },
@@ -253,11 +256,11 @@ function showResult() {
   const r = S.current;
   const title = $('#result-title'), msg = $('#result-msg');
   if (r.outcome === 'pass') {
-    $('#result-ic').innerHTML = ICONS.ok;
+    $('#result-ic').innerHTML = MASCOT.pouce;
     title.textContent = 'Bravo, merci !';
     msg.textContent = 'Vous avez repéré tous les sons du test. Un contrôle régulier de votre audition reste conseillé.';
   } else if (r.outcome === 'refer') {
-    $('#result-ic').innerHTML = ICONS.ear;
+    $('#result-ic').innerHTML = MASCOT.coucou;
     title.textContent = 'Merci pour votre participation !';
     msg.textContent = 'Certains sons vous ont échappé. Nous vous proposons un bilan auditif gratuit avec notre audioprothésiste, pour faire le point en toute tranquillité.';
   } else {
@@ -302,7 +305,7 @@ function showFiche() {
   const missedBy = e => SORTED_F.filter(f => r.tone?.[e]?.[f] && !r.tone[e][f].heard);
   const line = e => { const m = missedBy(e); return m.length ? m.map(f => `${f} Hz`).join(', ') : 'aucun'; };
   $('#fiche-card').innerHTML = `
-    <div class="row"><div class="logo">${ICONS.logo}<span>${APP.name}</span></div><div class="spacer"></div>
+    <div class="row"><div class="logo">${ICONS.logo}<span>${APP.name} · ${esc(APP.brand)}</span></div><div class="spacer"></div>
       <h2>Fiche d'orientation n° ${String(r.fiche).padStart(4, '0')}</h2></div>
     <p>${new Date(r.date).toLocaleString('fr-FR')} · ${esc(r.store)} · Conseiller : ${esc(r.advisor)}</p>
     <div class="card" style="box-shadow:none;border:2px solid var(--line)">

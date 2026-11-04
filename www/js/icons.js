@@ -33,4 +33,15 @@ export const ICONS = {
   logo: `<svg class="mark" viewBox="0 0 48 48"><rect width="48" height="48" rx="12" fill="#1D5FA8"/><path d="M14 24a10 10 0 0 1 20 0" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round"/><path d="M9 24a15 15 0 0 1 30 0" fill="none" stroke="#9CC5EE" stroke-width="3.5" stroke-linecap="round"/><circle cx="24" cy="28" r="4.5" fill="#fff"/></svg>`,
 };
 
-export function themeIcon(key) { return ICONS[key] || ICONS.ear; }
+// Visuels définitifs (série 3D) – détourés, 512 × 512
+const img = (file, alt) => `<img src="img/${file}.png" alt="${alt}" draggable="false" style="width:100%;height:100%;object-fit:contain">`;
+const THEME_IMG = {
+  corne: img('son_500_bateau', 'Bateau'), telephone: img('son_1000_telephone', 'Téléphone'),
+  clochette: img('son_2000_clochette', 'Clochette'), sifflet: img('son_3000_sifflet', 'Sifflet'),
+  oiseau: img('son_4000_oiseau', 'Oiseau'),
+};
+export const MASCOT = {
+  coucou: img('mascotte_coucou', 'Mascotte'), ecoute: img('mascotte_ecoute', 'Mascotte qui écoute'),
+  bravo: img('mascotte_bravo', 'Mascotte joyeuse'), pouce: img('mascotte_pouce', 'Mascotte pouce levé'),
+};
+export function themeIcon(key) { return THEME_IMG[key] || ICONS[key] || ICONS.ear; }

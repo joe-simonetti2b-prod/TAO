@@ -4,7 +4,8 @@
 export const APP = {
   name: 'TAO',
   fullName: 'Test Auditif Optique',
-  version: '0.1.0',
+  version: '0.2.0',
+  brand: 'Balbi Audition',
 };
 
 // Ordre de présentation classique : 1000 → 2000 → 3000 → 4000 → 500 Hz

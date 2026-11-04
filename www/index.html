@@ -13,7 +13,7 @@
 <!-- Blocage (étalonnage absent, matériel non conforme) -->
 <section class="screen center" id="s-blocked">
   <div class="card col center" style="max-width:70vw">
-    <div id="blocked-icon" style="width:14vh;height:14vh"></div>
+    <div id="blocked-icon" style="width:18vh;height:18vh"></div>
     <h2 id="blocked-title">Test indisponible</h2>
     <p class="soft" id="blocked-msg"></p>
     <div class="row" style="margin-top:2vh">
@@ -25,12 +25,15 @@
 
 <!-- Accueil vitrine -->
 <section class="screen" id="s-attract">
-  <div class="row"><div class="logo" id="logo-hold"></div><div class="spacer"></div><span class="soft small" id="attract-store"></span></div>
-  <div class="grow col center">
-    <h1>Testez votre audition<br>en 2 minutes</h1>
-    <p class="soft" style="font-size:1.1em">Gratuit, rapide et ludique. Retrouvez les sons cachés !</p>
-    <div class="attract-icons" id="attract-icons" style="margin:4vh 0"></div>
-    <button class="btn xl action" data-act="start">Commencer</button>
+  <div class="row"><div class="logo" id="logo-hold"></div><span class="soft small" id="attract-brand"></span><div class="spacer"></div><span class="soft small" id="attract-store"></span></div>
+  <div class="grow attract-body">
+    <div class="attract-mascot" id="attract-mascot"></div>
+    <div class="col center">
+      <h1>Testez votre audition<br>en 2 minutes</h1>
+      <p class="soft" style="font-size:1.1em">Gratuit, rapide et ludique.<br>Partez à la recherche des sons cachés !</p>
+      <div class="attract-icons" id="attract-icons" style="margin:3.5vh 0"></div>
+      <button class="btn xl action" data-act="start">Commencer le voyage sonore</button>
+    </div>
   </div>
   <p class="legal center">Test de sensibilisation : il ne remplace pas un bilan auditif réalisé par un audioprothésiste.</p>
 </section>
@@ -71,6 +74,7 @@
 <!-- Consigne -->
 <section class="screen" id="s-instructions">
   <div class="grow col center">
+    <div id="instr-mascot" style="width:20vh;height:20vh"></div>
     <h1>Comment ça marche ?</h1>
     <p style="font-size:1.15em;max-width:70vw" class="center">Vous allez entendre des petits sons, parfois <b>très faibles</b>.<br>
       Appuyez sur le grand bouton <b>dès que vous entendez quelque chose</b>, même tout doucement.</p>
@@ -104,7 +108,7 @@
 <!-- Interstitiel changement d'oreille -->
 <section class="screen center" id="s-earchange">
   <div class="col center">
-    <div style="width:18vh;height:18vh" id="earchange-ic"></div>
+    <div style="width:30vh;height:30vh" id="earchange-ic"></div>
     <h1 id="earchange-title">Bravo ! Passons à l'oreille gauche</h1>
   </div>
 </section>
