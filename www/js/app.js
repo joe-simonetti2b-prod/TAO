@@ -350,8 +350,9 @@ async function runDin() {
   S.din = new DinTest({
     calib: S.calibInfo.calib, voice: S.dinVoice || 'homme', antiphasic: !!S.settings.dinAntiphasic,
     hooks: {
-      onTriplet: (i, n) => {
-        $('#din-progress').textContent = `${i + 1} / ${n}`; $('#din-bar').style.width = `${(i / n) * 100}%`;
+      onTriplet: (i, n, practice) => {
+        $('#din-progress').textContent = practice ? `Essai ${i + 1} / ${n}` : `${i + 1} / ${n}`;
+        $('#din-bar').style.width = practice ? '0%' : `${(i / n) * 100}%`;
         typed = ''; draw(); $('#din-title').textContent = 'Écoutez…'; $('#din-hint').textContent = 'Écoutez les 3 chiffres…';
       },
       onListen: on => $('#din-listen').classList.toggle('idle', !on),

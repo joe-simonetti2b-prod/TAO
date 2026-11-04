@@ -34,7 +34,7 @@ export class DinTest {
    */
   constructor(o) {
     this.o = o; this.aborted = false;
-    this.total = 24; this.step = 2; this.startSnr = 0;
+    this.total = 24; this.step = 2; this.startSnr = 0; this.practice = 2;
   }
   abort() { this.aborted = true; }
 
@@ -47,7 +47,7 @@ export class DinTest {
     this.noise = await dec(m.noise);
     if (m.triplets) {
       // Triplets préenregistrés : on tire au sort ceux de la séance (sans répétition) et on ne décode qu'eux
-      const keys = Object.keys(m.triplets).sort(() => Math.random() - 0.5).slice(0, this.total + 2);
+      const keys = Object.keys(m.triplets).sort(() => Math.random() - 0.5).slice(0, this.total + this.practice + 2);
       this.trip = {};
       await Promise.all(keys.map(async k => { this.trip[k] = await dec(m.triplets[k]); }));
       this.tripQueue = keys;
@@ -115,6 +115,16 @@ export class DinTest {
 
   async run() {
     await this.load();
+    // Familiarisation : 2 triplets faciles (+6 dB RSB), non comptés, pour comprendre la tâche
+    for (let i = 0; i < this.practice && !this.aborted; i++) {
+      this.o.hooks?.onTriplet?.(i, this.practice, true);
+      const trip = this.randomTriplet();
+      this.o.hooks?.onListen?.(true);
+      await this.playTriplet(trip, 6);
+      this.o.hooks?.onListen?.(false);
+      if (this.aborted) break;
+      await this.o.hooks.askAnswer(true);
+    }
     let snr = this.startSnr;
     const track = [];
     for (let i = 0; i < this.total && !this.aborted; i++) {
