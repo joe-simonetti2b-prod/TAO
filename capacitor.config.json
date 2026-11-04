@@ -1,0 +1,11 @@
+{
+  "appId": "fr.weave.tao",
+  "appName": "TAO",
+  "webDir": "dist",
+  "server": { "androidScheme": "https" },
+  "android": {
+    "webContentsDebuggingEnabled": false,
+    "allowMixedContent": false,
+    "captureInput": false
+  }
+}

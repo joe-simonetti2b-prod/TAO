@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="author" content="Joseph-Marie Simonetti – Weave">
+<title>TAO – Test Auditif Optique</title>
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+<!-- Blocage (étalonnage absent, matériel non conforme) -->
+<section class="screen center" id="s-blocked">
+  <div class="card col center" style="max-width:70vw">
+    <div id="blocked-icon" style="width:14vh;height:14vh"></div>
+    <h2 id="blocked-title">Test indisponible</h2>
+    <p class="soft" id="blocked-msg"></p>
+    <div class="row" style="margin-top:2vh">
+      <button class="btn secondary" data-act="retry">Réessayer</button>
+      <button class="btn ghost" data-act="staff">Espace équipe</button>
+    </div>
+  </div>
+</section>
+
+<!-- Accueil vitrine -->
+<section class="screen" id="s-attract">
+  <div class="row"><div class="logo" id="logo-hold"></div><div class="spacer"></div><span class="soft small" id="attract-store"></span></div>
+  <div class="grow col center">
+    <h1>Testez votre audition<br>en 2 minutes</h1>
+    <p class="soft" style="font-size:1.1em">Gratuit, rapide et ludique. Retrouvez les sons cachés !</p>
+    <div class="attract-icons" id="attract-icons" style="margin:4vh 0"></div>
+    <button class="btn xl action" data-act="start">Commencer</button>
+  </div>
+  <p class="legal center">Test de sensibilisation : il ne remplace pas un bilan auditif réalisé par un audioprothésiste.</p>
+</section>
+
+<!-- Choix du conseiller -->
+<section class="screen" id="s-advisor">
+  <div class="row"><h2>Qui accompagne le client ?</h2><div class="spacer"></div><button class="btn ghost" data-act="home">Annuler</button></div>
+  <div class="row wrap grow" id="advisor-list" style="align-content:center;justify-content:center;gap:2vw"></div>
+</section>
+
+<!-- Contrôle quotidien -->
+<section class="screen center" id="s-daily">
+  <div class="card col center" style="max-width:80vw">
+    <h2>Contrôle du jour (conseiller)</h2>
+    <p class="soft">Mettez le casque vous-même. Appuyez sur chaque bouton : vous devez entendre un son net du bon côté uniquement.</p>
+    <div class="row" style="margin:2vh 0">
+      <button class="btn" style="background:var(--ear-r)" data-act="daily-play" data-ear="R">Son à DROITE</button>
+      <button class="btn" style="background:var(--ear-l)" data-act="daily-play" data-ear="L">Son à GAUCHE</button>
+    </div>
+    <div class="row">
+      <button class="btn action" data-act="daily-ok">Les deux sons sont corrects</button>
+      <button class="btn danger" data-act="daily-ko">Problème</button>
+    </div>
+  </div>
+</section>
+
+<!-- Mise du casque -->
+<section class="screen" id="s-headset">
+  <div class="grow col center">
+    <h1>Mettez le casque</h1>
+    <div class="headset" id="headset-ic"></div>
+    <p style="font-size:1.1em"><b style="color:var(--ear-r)">D = droite</b> sur l'oreille droite, <b style="color:var(--ear-l)">G = gauche</b> sur l'oreille gauche.</p>
+    <p class="soft">Retirez vos lunettes si elles gênent, et vos aides auditives si vous en portez.</p>
+  </div>
+  <div class="row center"><button class="btn xl" data-act="headset-done">C'est fait</button></div>
+</section>
+
+<!-- Consigne -->
+<section class="screen" id="s-instructions">
+  <div class="grow col center">
+    <h1>Comment ça marche ?</h1>
+    <p style="font-size:1.15em;max-width:70vw" class="center">Vous allez entendre des petits sons, parfois <b>très faibles</b>.<br>
+      Appuyez sur le grand bouton <b>dès que vous entendez quelque chose</b>, même tout doucement.</p>
+    <p class="soft">Il y a parfois des silences : c'est normal, attendez simplement le prochain son.</p>
+    <div class="row" style="margin-top:3vh">
+      <button class="btn secondary xl" data-act="demo">Écouter un exemple</button>
+      <button class="btn xl action" data-act="begin">Je suis prêt</button>
+    </div>
+  </div>
+</section>
+
+<!-- Test tonal -->
+<section class="screen" id="s-test">
+  <div class="row">
+    <span class="ear-badge R" id="ear-badge">Oreille droite</span>
+    <div class="spacer"></div>
+    <div class="progress" id="progress"></div>
+    <div class="spacer"></div>
+    <button class="btn ghost small" data-act="pause" id="btn-pause">Pause</button>
+  </div>
+  <div class="banner hidden" id="noise-banner">Un peu de bruit autour de vous… on attend le calme quelques secondes.</div>
+  <div class="test-body">
+    <div class="col center">
+      <div class="theme-ic" id="theme-ic"></div>
+      <h2 id="theme-label">Cherchez le téléphone…</h2>
+    </div>
+    <button class="hear-btn" id="hear-btn">J'entends !</button>
+  </div>
+</section>
+
+<!-- Interstitiel changement d'oreille -->
+<section class="screen center" id="s-earchange">
+  <div class="col center">
+    <div style="width:18vh;height:18vh" id="earchange-ic"></div>
+    <h1 id="earchange-title">Bravo ! Passons à l'oreille gauche</h1>
+  </div>
+</section>
+
+<!-- Résultat client -->
+<section class="screen center" id="s-result">
+  <div class="card col center" style="max-width:76vw">
+    <div class="result-ic" id="result-ic"></div>
+    <h1 id="result-title"></h1>
+    <p id="result-msg" style="font-size:1.1em"></p>
+    <p class="legal">Ce test ne remplace pas un bilan auditif réalisé par un audioprothésiste.</p>
+    <div class="row" style="margin-top:2vh">
+      <button class="btn xl" data-act="to-advisor">Rendre la tablette au conseiller</button>
+    </div>
+  </div>
+</section>
+
+<!-- Espace conseiller : résultat détaillé -->
+<section class="screen" id="s-advisor-result">
+  <div class="row"><h2>Résultat détaillé</h2><div class="spacer"></div><span class="soft small" id="ar-meta"></span></div>
+  <div class="row grow" style="align-items:flex-start;gap:3vw">
+    <div class="col card" style="flex:1.3" id="ar-table"></div>
+    <div class="col card" style="flex:1" id="ar-side"></div>
+  </div>
+  <div class="row">
+    <button class="btn secondary" data-act="retest">Refaire le test</button>
+    <div class="spacer"></div>
+    <button class="btn action" data-act="refer" id="btn-refer">Orienter vers le centre audio</button>
+    <button class="btn" data-act="finish">Terminer</button>
+  </div>
+</section>
+
+<!-- Fiche d'orientation -->
+<section class="screen center" id="s-fiche">
+  <div class="card col" style="width:72vw" id="fiche-card"></div>
+  <div class="row"><button class="btn" data-act="finish">Terminer</button></div>
+</section>
+
+<!-- Chiffres dans le bruit -->
+<section class="screen" id="s-din-intro">
+  <div class="grow col center">
+    <h1>Bonus : comprendre dans le bruit</h1>
+    <p style="font-size:1.1em;max-width:70vw" class="center">Vous allez entendre <b>3 chiffres</b> au milieu d'un bruit de fond.
+      Tapez les 3 chiffres entendus. Si vous n'êtes pas sûr, devinez !</p>
+    <div class="row" style="margin-top:3vh">
+      <button class="btn secondary xl" data-act="din-skip">Passer</button>
+      <button class="btn xl action" data-act="din-start">C'est parti</button>
+    </div>
+  </div>
+</section>
+<section class="screen" id="s-din">
+  <div class="row"><h2>Tapez les 3 chiffres</h2><div class="spacer"></div><span class="soft" id="din-progress"></span></div>
+  <div class="row grow" style="gap:4vw">
+    <div class="col center grow"><div class="din-display" id="din-display"></div><p class="soft" id="din-hint">Écoutez…</p></div>
+    <div class="pad" id="din-pad" style="flex:1.2"></div>
+  </div>
+</section>
+
+<!-- Administration -->
+<section class="screen admin" id="s-admin">
+  <nav id="admin-nav"></nav>
+  <main id="admin-main"></main>
+</section>
+
+<div id="overlay-root"></div>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>

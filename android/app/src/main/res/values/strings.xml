@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">TAO</string>
+    <string name="title_activity_main">TAO</string>
+    <string name="package_name">fr.weave.tao</string>
+    <string name="custom_url_scheme">fr.weave.tao</string>
+</resources>
