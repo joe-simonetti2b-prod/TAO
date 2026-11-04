@@ -11,7 +11,7 @@ function walk(dir) {
   for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
     const p = path.join(dir, e.name), o = path.join(OUT, path.relative(SRC, p));
     if (e.isDirectory()) { fs.mkdirSync(o, { recursive: true }); walk(p); continue; }
-    if (p.endsWith('.js') && !process.env.NO_OBFUSCATE) {
+    if (p.endsWith('.js') && !p.includes('vendor') && !process.env.NO_OBFUSCATE) {
       const code = fs.readFileSync(p, 'utf8');
       const res = JavaScriptObfuscator.obfuscate(code, {
         compact: true, controlFlowFlattening: true, controlFlowFlatteningThreshold: 0.5,

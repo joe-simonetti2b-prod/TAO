@@ -36,8 +36,16 @@ export async function keepAwake(on) {
   try { await p.keepAwake({ on }); } catch {}
 }
 export async function startKiosk() {
-  const p = plugin(); if (!p) return;
-  try { await p.startKiosk(); } catch {}
+  const p = plugin(); if (!p) return { ok: false };
+  try { return { ok: true, ...(await p.startKiosk()) }; } catch (e) { return { ok: false, error: String(e) }; }
+}
+export async function exitApp() {
+  const p = plugin(); if (!p) return false;
+  try { await p.exitApp(); return true; } catch { return false; }
+}
+export async function releaseDeviceOwner() {
+  const p = plugin(); if (!p) return { ok: false };
+  try { return { ok: true, ...(await p.releaseDeviceOwner()) }; } catch (e) { return { ok: false, error: String(e) }; }
 }
 export async function stopKiosk() {
   const p = plugin(); if (!p) return;
@@ -54,9 +62,11 @@ export function onRouteChange(cb) {
 
 // Le test client n'est autorisé que si la sortie est le casque filaire.
 // Hors tablette : autorisé en mode démonstration uniquement.
-export async function audioRouteOk() {
+// trialMode : mode essai (téléphone, sans casque filaire) – interdit en magasin
+export async function audioRouteOk(trialMode = false) {
   const s = await getStatus();
   if (!s.native) return { ok: true, demo: true, status: s };
+  if (trialMode) return { ok: true, demo: true, trial: true, status: s };
   if (s.bluetooth) return { ok: false, reason: 'Un appareil Bluetooth audio est connecté. Désactivez le Bluetooth.', status: s };
   if (!s.wired) return { ok: false, reason: 'Le casque filaire n’est pas branché.', status: s };
   return { ok: true, demo: false, status: s };

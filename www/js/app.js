@@ -80,6 +80,7 @@ function demoFlag() {
   const msgs = [];
   if (!device.isNative()) msgs.push('Navigateur – démonstration');
   if (c?.method === 'demo') msgs.push('Étalonnage de DÉMONSTRATION');
+  if (S.settings.trialMode) msgs.push('MODE ESSAI sans casque – interdit en magasin');
   if (msgs.length) {
     const d = document.createElement('div'); d.className = 'demo-flag'; d.textContent = msgs.join(' · ');
     document.body.appendChild(d);
@@ -148,7 +149,7 @@ async function openStaff() {
 // ---------------------------------------------------------------- parcours client
 async function startFlow() {
   await resume();
-  const r = await device.audioRouteOk();
+  const r = await device.audioRouteOk(!!S.settings.trialMode);
   if (!r.ok) return blocked('Vérifiez le casque', r.reason);
   const adv = S.settings.advisors || [];
   if (adv.length) {
@@ -253,7 +254,7 @@ function pauseOverlay(msg = 'Test en pause') {
   o.el.addEventListener('click', async e => {
     const k = e.target.closest('[data-k]')?.dataset.k; if (!k) return;
     if (k === 'go') {
-      const r = await device.audioRouteOk();
+      const r = await device.audioRouteOk(!!S.settings.trialMode);
       if (!r.ok) return toast(r.reason);
       o.close(); S.test?.resume();
     } else { o.close(); goHome(); }
@@ -309,22 +310,55 @@ function showAdvisorResult() {
   show('s-advisor-result');
 }
 
-function showFiche() {
-  const r = S.current;
+function ficheText(r) {
   const missedBy = e => SORTED_F.filter(f => r.tone?.[e]?.[f] && !r.tone[e][f].heard);
   const line = e => { const m = missedBy(e); return m.length ? m.map(f => `${f} Hz`).join(', ') : 'aucun'; };
+  const n = String(r.fiche).padStart(4, '0');
+  const txt = [
+    `TAO – ${APP.brand}`, `Fiche d'orientation n° ${n}`,
+    `${new Date(r.date).toLocaleString('fr-FR')} – ${r.store} – Conseiller : ${r.advisor}`,
+    `Dépistage à ${r.levelHL} dB HL${r.extra500 ? ` (500 Hz : ${r.levelHL + r.extra500})` : ''} – sons ${r.stimulusType === 'theme' ? 'thématiques' : 'purs pulsés'}`,
+    `Sons non perçus OD : ${line('R')}`, `Sons non perçus OG : ${line('L')}`,
+    r.din ? `Chiffres dans le bruit : ${r.din.srt} dB RSB (voix ${r.din.voice}${r.din.antiphasic ? ', antiphasique' : ''})` : null,
+    `Fiabilité : ${r.reliable ? 'bonne' : 'à vérifier'} (${r.falsePositives} fausse(s) alarme(s))`,
+    `Étalonnage du ${r.calibDate ? new Date(r.calibDate).toLocaleDateString('fr-FR') : '?'} – TAO v${r.appVersion || APP.version}`,
+    `À présenter à l'audioprothésiste. Test de sensibilisation, ne constitue pas un examen médical.`,
+  ].filter(Boolean).join('\n');
+  return { n, line, txt };
+}
+
+function qrSVG(text) {
+  try {
+    const q = window.qrcode(0, 'M');
+    window.qrcode.stringToBytes = window.qrcode.stringToBytesFuncs['UTF-8'];
+    q.addData(text, 'Byte'); q.make();
+    return q.createSvgTag({ cellSize: 4, margin: 2, scalable: true });
+  } catch { return ''; }
+}
+
+function showFiche() {
+  const r = S.current;
+  const { n, line, txt } = ficheText(r);
   $('#fiche-card').innerHTML = `
     <div class="row"><div class="logo">${ICONS.logo}<span>${APP.name} · ${esc(APP.brand)}</span></div><div class="spacer"></div>
-      <h2>Fiche d'orientation n° ${String(r.fiche).padStart(4, '0')}</h2></div>
-    <p>${new Date(r.date).toLocaleString('fr-FR')} · ${esc(r.store)} · Conseiller : ${esc(r.advisor)}</p>
-    <div class="card" style="box-shadow:none;border:2px solid var(--line)">
-      <p><b>Sons non perçus</b> (niveau de dépistage ${r.levelHL} dB HL)</p>
-      <p><b style="color:var(--ear-r)">Oreille droite :</b> ${line('R')}</p>
-      <p><b style="color:var(--ear-l)">Oreille gauche :</b> ${line('L')}</p>
-      ${r.din ? `<p><b>Compréhension dans le bruit :</b> ${r.din.srt} dB RSB</p>` : ''}
+      <h2>Fiche d'orientation n° ${n}</h2></div>
+    <div class="fiche-grid">
+      <div class="col">
+        <p>${new Date(r.date).toLocaleString('fr-FR')} · ${esc(r.store)} · Conseiller : ${esc(r.advisor)}</p>
+        <div class="card" style="box-shadow:none;border:2px solid var(--line)">
+          <p><b>Sons non perçus</b> (niveau de dépistage ${r.levelHL} dB HL)</p>
+          <p><b style="color:var(--ear-r)">Oreille droite :</b> ${line('R')}</p>
+          <p><b style="color:var(--ear-l)">Oreille gauche :</b> ${line('L')}</p>
+          ${r.din ? `<p><b>Compréhension dans le bruit :</b> ${r.din.srt} dB RSB</p>` : ''}
+        </div>
+        <p style="font-size:1.05em"><b>Votre audioprothésiste vous attend pour un bilan auditif gratuit.</b></p>
+      </div>
+      <div class="col center qr-box">
+        <div class="qr">${qrSVG(txt)}</div>
+        <p class="small center"><b>Prenez ce code en photo</b><br>et présentez-le au centre audio</p>
+      </div>
     </div>
-    <p style="font-size:1.1em"><b>Votre audioprothésiste vous attend pour un bilan auditif gratuit.</b></p>
-    <p class="legal">Test de sensibilisation réalisé en magasin d'optique. Ce document n'est pas un examen médical et ne remplace pas un bilan auditif réalisé par un audioprothésiste.</p>`;
+    <p class="legal">Test de sensibilisation réalisé en magasin d'optique. Ce document n'est pas un examen médical et ne remplace pas un bilan auditif réalisé par un audioprothésiste. Aucune donnée personnelle n'est enregistrée.</p>`;
   show('s-fiche');
 }
 
@@ -417,9 +451,10 @@ $('#hear-btn').addEventListener('pointerdown', e => {
 // ================================================================ ADMINISTRATION
 const TABS_AUDIO = [
   ['settings', 'Réglages du test'], ['calib', 'Étalonnage'], ['hardware', 'Matériel'],
-  ['team', 'Magasin et équipe'], ['results', 'Résultats'], ['about', 'À propos'], ['quit', '← Quitter'],
+  ['team', 'Magasin et équipe'], ['results', 'Résultats'], ['guide', 'Guide conseiller'], ['about', 'À propos'],
+  ['quit', '← Retour au test'], ['exit', '⏻ Quitter l\u2019application'],
 ];
-const TABS_ADVISOR = [['today', 'Aujourd’hui'], ['quit', '← Quitter']];
+const TABS_ADVISOR = [['today', 'Aujourd’hui'], ['guide', 'Guide conseiller'], ['quit', '← Retour au test']];
 let ADMIN = { role: null, tab: null, draft: null, bio: null, slm: null, cont: null };
 
 function openAdmin(role) {
@@ -437,7 +472,7 @@ function renderAdmin() {
     `<div class="spacer"></div><p class="tiny" style="color:#8FA3B8">${ADMIN.role === 'audio' ? 'Audioprothésiste' : 'Conseiller'} · v${APP.version}</p>`;
   const m = $('#admin-main');
   const fn = { settings: tabSettings, calib: tabCalib, hardware: tabHardware, team: tabTeam,
-               results: tabResults, about: tabAbout, today: tabToday }[ADMIN.tab];
+               results: tabResults, about: tabAbout, today: tabToday, guide: tabGuide }[ADMIN.tab];
   m.innerHTML = '';
   fn?.(m);
 }
@@ -446,6 +481,7 @@ $('#admin-nav').addEventListener('click', e => {
   const k = e.target.closest('[data-tab]')?.dataset.tab; if (!k) return;
   ADMIN.cont?.stop(); ADMIN.cont = null;
   if (k === 'quit') { device.unlockVolume(); S.noise.stop(); return goHome(); }
+  if (k === 'exit') { return confirmExit(); }
   ADMIN.tab = k; renderAdmin();
 });
 
@@ -659,7 +695,14 @@ async function tabHardware(m) {
       <button class="btn small" id="vset">Fixer et verrouiller</button>
       <button class="btn small secondary" id="vfree">Déverrouiller</button></div>
       <span class="soft small">Choisir un cran sous le seuil d'avertissement « volume élevé » d'Android. Changer ce cran impose un réétalonnage.</span></div>
-    <div class="field"><label>Mode kiosque (empêche de quitter l'appli)</label>${seg('kiosk', ['on', 'off'], s.kiosk ? 'on' : 'off', v => v === 'on' ? 'Activé' : 'Désactivé')}</div>
+    <div class="field"><label>Verrouillage de la tablette (kiosque)</label>
+      ${seg('kiosk', ['on', 'off'], s.kiosk ? 'on' : 'off', v => v === 'on' ? 'Activé' : 'Désactivé')}
+      <p class="small">Statut : ${st.deviceOwner ? '<span class="pill ok">TAO propriétaire de l\u2019appareil – verrouillage complet</span>' : '<span class="pill warn">Épinglage simple (contournable)</span>'} ${st.kiosk ? '<span class="pill ok">verrouillé</span>' : ''}</p>
+      <span class="soft small">${st.deviceOwner ? 'Barres système, accueil et applis récentes désactivés ; la tablette redémarre directement dans TAO. Seul l\u2019administrateur peut quitter (menu « Quitter l\u2019application »).' : 'Pour un verrouillage complet : réinitialiser la tablette sans compte Google, puis depuis un PC : <code>adb shell dpm set-device-owner fr.weave.tao/.TaoAdminReceiver</code>'}</span>
+      ${st.deviceOwner ? '<div class="row" style="margin-top:.6em"><button class="btn small danger" id="kown">Retirer le statut propriétaire</button></div>' : ''}</div>
+    <div class="field"><label>Mode essai (téléphone, sans casque filaire)</label>
+      ${seg('trial', ['on', 'off'], s.trialMode ? 'on' : 'off', v => v === 'on' ? 'Activé' : 'Désactivé')}
+      <span class="soft small">Pour tester le fonctionnement sur un téléphone ou avec le haut-parleur. Un bandeau reste affiché. <b>Interdit pour un vrai dépistage.</b></span></div>
     <h3>Check-list d'installation de la tablette</h3>
     <ul class="small">
       <li>Dolby Atmos : désactivé (Paramètres › Sons et vibrations › Qualité et effets sonores)</li>
@@ -678,7 +721,19 @@ async function tabHardware(m) {
     renderAdmin();
   };
   $('#vfree', m).onclick = () => { device.unlockVolume(); toast('Volume déverrouillé'); };
-  bindSeg(m, 'kiosk', v => { saveSet({ kiosk: v === 'on' }); v === 'on' ? device.startKiosk() : device.stopKiosk(); });
+  bindSeg(m, 'kiosk', async v => {
+    saveSet({ kiosk: v === 'on' });
+    if (v === 'on') { const r = await device.startKiosk(); toast(r.deviceOwner ? 'Tablette verrouillée' : 'Épinglage activé (verrouillage simple)'); }
+    else { await device.stopKiosk(); toast('Verrouillage désactivé'); }
+    setTimeout(renderAdmin, 600);
+  });
+  bindSeg(m, 'trial', v => { saveSet({ trialMode: v === 'on' }); demoFlag(); });
+  const kown = $('#kown', m);
+  if (kown) kown.onclick = async () => {
+    const r = await device.releaseDeviceOwner();
+    toast(r.ok && !r.deviceOwner ? 'Statut propriétaire retiré : TAO peut être désinstallée' : 'Échec : ' + (r.error || ''));
+    saveSet({ kiosk: false }); renderAdmin();
+  };
 }
 
 // ---------- Magasin et équipe
@@ -757,7 +812,39 @@ async function tabAbout(m) {
     <p>Conception et réalisation : <b>Joseph-Marie Simonetti – Weave</b>. © 2026. Tous droits réservés. Reproduction, copie ou extraction interdites.</p>
     <p class="small soft" style="margin-top:1em">Outil interne de sensibilisation à l'audition. Il ne constitue pas un examen médical et ne remplace pas un bilan auditif réalisé par un audioprothésiste.</p>
     <h3 style="margin-top:1.5em">Logiciels utilisés</h3>
-    <ul class="small"><li>Capacitor – Ionic (licence MIT)</li><li>Android – AOSP (licence Apache 2.0)</li><li>Web Audio API (moteur audio du système)</li><li>Piper – Rhasspy (licence MIT)</li>${voices}</ul>`;
+    <ul class="small"><li>Capacitor – Ionic (licence MIT)</li><li>Android – AOSP (licence Apache 2.0)</li><li>Web Audio API (moteur audio du système)</li><li>Piper – Rhasspy (licence MIT)</li><li>qrcode-generator – Kazuhiko Arase (licence MIT)</li><li>Police Nunito (SIL Open Font License)</li>${voices}</ul>`;
+}
+
+// ---------- Quitter l'application (administrateur uniquement)
+function confirmExit() {
+  const o = overlay(`<div class="card col center" style="max-width:60vw"><h2>Quitter TAO ?</h2>
+    <p class="soft center">Le verrouillage de la tablette est levé jusqu'au prochain lancement de l'appli.</p>
+    <div class="row"><button class="btn secondary" data-k="no">Annuler</button><button class="btn danger" data-k="yes">Quitter</button></div></div>`);
+  o.el.addEventListener('click', async e => {
+    const k = e.target.closest('[data-k]')?.dataset.k; if (!k) return;
+    o.close();
+    if (k === 'yes') {
+      device.unlockVolume(); S.noise.stop();
+      if (!(await device.exitApp())) { toast('Hors tablette : retour à l\u2019accueil'); goHome(); }
+    }
+  });
+}
+
+// ---------- Guide conseiller (non-audioprothésistes)
+function tabGuide(m) {
+  m.innerHTML = `<h2>Guide conseiller</h2>
+    <p class="soft small" style="margin-bottom:1.2em">Vous n'avez pas à interpréter le test : vous accompagnez le client et vous l'orientez. Seul l'audioprothésiste réalise et interprète un bilan auditif.</p>
+    <div class="guide">
+      <div class="card"><h3>1. Proposer</h3><p class="small">« Nous proposons un petit test d'audition gratuit, 2 minutes, au casque. Ça vous dit ? » Ne jamais insister. Le test convient aux adultes, sans aide auditive portée.</p></div>
+      <div class="card"><h3>2. Installer</h3><p class="small">Client assis, au calme, dos à l'agitation du magasin. Casque : <b style="color:var(--ear-r)">D</b> à droite, <b style="color:var(--ear-l)">G</b> à gauche. Lunettes retirées si elles gênent. Restez à proximité, sans parler pendant le test.</p></div>
+      <div class="card"><h3>3. Pendant le test</h3><p class="small">Ne rien montrer ni signaler quand un son passe. Si le client est perdu : bouton « Pause », réexpliquez, reprenez. Bruit fort dans le magasin : l'appli attend toute seule.</p></div>
+      <div class="card"><h3>4. Annoncer le résultat</h3><p class="small"><b>Tout entendu :</b> « Très bien ! Un contrôle régulier reste conseillé. »<br>
+        <b>Sons manqués :</b> « Certains sons vous ont échappé. Ce n'est pas un diagnostic : notre audioprothésiste peut faire un bilan complet, gratuit. »<br>
+        <b>Non fiable :</b> réexpliquez la consigne et proposez de recommencer.</p></div>
+      <div class="card"><h3>5. Orienter</h3><p class="small">Bouton « Orienter vers le centre audio » : la fiche s'affiche avec un QR code. Le client le prend en photo et le présente au centre audio. Idéal : <b>fixer le rendez-vous tout de suite</b>, avec lui.</p></div>
+      <div class="card"><h3>À ne jamais dire</h3><p class="small">« Vous êtes sourd », « vous avez une perte de… », « il vous faut un appareil », un pourcentage d'audition. Ne jamais commenter le détail des fréquences.</p></div>
+    </div>
+    <p class="small soft" style="margin-top:1.2em">Données : le test est anonyme. Aucun nom, téléphone ni e-mail n'est enregistré par l'appli.</p>`;
 }
 
 boot();

@@ -3,19 +3,54 @@
 // (cela donnerait un indice visuel au client).
 
 let current = null;
+let lastTap = null;
+document.addEventListener('pointerdown', e => { lastTap = { x: e.clientX, y: e.clientY, t: performance.now() }; },
+  { passive: true, capture: true });
 
+const EASE_OUT = 'cubic-bezier(.2,.8,.2,1)';
+const EASE_ZOOM = 'cubic-bezier(.65,0,.25,1)';
+const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/**
+ * Change d'écran.
+ * - Après un toucher : la nouvelle page « s'ouvre » depuis le doigt (révélation circulaire + léger zoom),
+ *   l'ancienne recule en profondeur (réduction + flou).
+ * - Sinon : glissement doux.
+ */
 export function showScreen(id) {
   const next = document.getElementById(id);
   if (!next || next === current) return;
   const prev = current;
+  const tap = lastTap && performance.now() - lastTap.t < 900 ? lastTap : null;
+  const motion = !reduced() && !!next.animate;
+
   if (prev) {
-    prev.classList.remove('active', 'enter');
+    prev.classList.remove('active', 'enter', 'enter-zoom');
     prev.classList.add('leave');
-    setTimeout(() => prev.classList.remove('leave'), 330);
+    if (motion) {
+      prev.getAnimations?.().forEach(a => a.cancel());
+      const a = prev.animate(
+        [{ transform: 'none', filter: 'none', opacity: 1 },
+         { transform: 'scale(.93)', filter: 'blur(6px)', opacity: 0 }],
+        { duration: tap ? 560 : 380, easing: EASE_OUT, fill: 'forwards' });
+      a.onfinish = () => { prev.classList.remove('leave'); a.cancel(); };
+    } else setTimeout(() => prev.classList.remove('leave'), 330);
   }
+
   next.classList.remove('leave');
-  next.classList.add('active', 'enter');
-  setTimeout(() => next.classList.remove('enter'), 900);
+  next.getAnimations?.().forEach(a => a.cancel());
+  if (motion && tap) {
+    next.classList.add('active', 'enter-zoom');
+    const R = Math.hypot(Math.max(tap.x, innerWidth - tap.x), Math.max(tap.y, innerHeight - tap.y));
+    next.animate(
+      [{ clipPath: `circle(0px at ${tap.x}px ${tap.y}px)`, transform: 'scale(1.06)', transformOrigin: `${tap.x}px ${tap.y}px` },
+       { clipPath: `circle(${R}px at ${tap.x}px ${tap.y}px)`, transform: 'none', transformOrigin: `${tap.x}px ${tap.y}px` }],
+      { duration: 680, easing: EASE_ZOOM });
+    setTimeout(() => next.classList.remove('enter-zoom'), 1100);
+  } else {
+    next.classList.add('active', 'enter');
+    setTimeout(() => next.classList.remove('enter'), 900);
+  }
   current = next;
 }
 

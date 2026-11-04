@@ -4,6 +4,10 @@ package fr.weave.tao;
 // © 2026 Joseph-Marie Simonetti – Weave. Tous droits réservés.
 
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.admin.DevicePolicyManager;
+import android.content.ComponentName;
+import android.content.pm.PackageManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -70,6 +74,8 @@ public class TaoDevicePlugin extends Plugin {
         o.put("volumeIndex", am.getStreamVolume(AudioManager.STREAM_MUSIC));
         o.put("volumeMax", am.getStreamMaxVolume(AudioManager.STREAM_MUSIC));
         o.put("locked", volumeLocked);
+        o.put("deviceOwner", isDeviceOwner());
+        o.put("kiosk", kioskActive());
         o.put("lockedIndex", lockedIndex);
         return o;
     }
@@ -146,18 +152,101 @@ public class TaoDevicePlugin extends Plugin {
         call.resolve();
     }
 
+    // ---------- Kiosque ----------
+    static volatile boolean kioskWanted = false;
+
+    private DevicePolicyManager dpm() { return (DevicePolicyManager) getContext().getSystemService(Context.DEVICE_POLICY_SERVICE); }
+    private ComponentName admin() { return new ComponentName(getContext(), TaoAdminReceiver.class); }
+    private ComponentName home() { return new ComponentName(getContext(), getContext().getPackageName() + ".KioskHome"); }
+
+    private boolean isDeviceOwner() {
+        try { return dpm().isDeviceOwnerApp(getContext().getPackageName()); } catch (Exception e) { return false; }
+    }
+
+    private boolean kioskActive() {
+        try {
+            ActivityManager am2 = (ActivityManager) getContext().getSystemService(Context.ACTIVITY_SERVICE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) return am2.getLockTaskModeState() != ActivityManager.LOCK_TASK_MODE_NONE;
+        } catch (Exception ignored) {}
+        return false;
+    }
+
+    private void setHomeEnabled(boolean on) {
+        try {
+            getContext().getPackageManager().setComponentEnabledSetting(home(),
+                on ? PackageManager.COMPONENT_ENABLED_STATE_ENABLED : PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                PackageManager.DONT_KILL_APP);
+        } catch (Exception ignored) {}
+    }
+
     @PluginMethod
     public void startKiosk(PluginCall call) {
         Activity a = getActivity();
+        kioskWanted = true;
+        boolean owner = isDeviceOwner();
+        if (owner) {
+            try {
+                DevicePolicyManager d = dpm();
+                d.setLockTaskPackages(admin(), new String[]{ getContext().getPackageName() });
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) d.setLockTaskFeatures(admin(), DevicePolicyManager.LOCK_TASK_FEATURE_NONE);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) { d.setStatusBarDisabled(admin(), true); d.setKeyguardDisabled(admin(), true); }
+                // TAO devient l'écran d'accueil de la tablette (redémarre directement dans l'appli)
+                setHomeEnabled(true);
+                IntentFilter f = new IntentFilter(Intent.ACTION_MAIN);
+                f.addCategory(Intent.CATEGORY_HOME); f.addCategory(Intent.CATEGORY_DEFAULT);
+                d.addPersistentPreferredActivity(admin(), f, home());
+            } catch (Exception ignored) {}
+        }
         if (a != null) a.runOnUiThread(() -> { try { a.startLockTask(); } catch (Exception ignored) {} });
-        call.resolve();
+        JSObject o = new JSObject();
+        o.put("deviceOwner", owner);
+        o.put("mode", owner ? "proprietaire" : "epinglage");
+        call.resolve(o);
     }
 
     @PluginMethod
     public void stopKiosk(PluginCall call) {
         Activity a = getActivity();
+        kioskWanted = false;
+        if (isDeviceOwner()) {
+            try {
+                DevicePolicyManager d = dpm();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) { d.setStatusBarDisabled(admin(), false); d.setKeyguardDisabled(admin(), false); }
+                d.clearPackagePersistentPreferredActivities(admin(), getContext().getPackageName());
+                setHomeEnabled(false);
+            } catch (Exception ignored) {}
+        }
         if (a != null) a.runOnUiThread(() -> { try { a.stopLockTask(); } catch (Exception ignored) {} });
         call.resolve();
+    }
+
+    // Quitter l'application (réservé à l'administrateur, après code)
+    @PluginMethod
+    public void exitApp(PluginCall call) {
+        Activity a = getActivity();
+        kioskWanted = false;
+        call.resolve();
+        if (a != null) a.runOnUiThread(() -> {
+            try { a.stopLockTask(); } catch (Exception ignored) {}
+            a.finishAndRemoveTask();
+        });
+    }
+
+    // Retire le statut « propriétaire de l'appareil » (permet de désinstaller TAO normalement)
+    @PluginMethod
+    public void releaseDeviceOwner(PluginCall call) {
+        try {
+            if (isDeviceOwner()) {
+                DevicePolicyManager d = dpm();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) d.setStatusBarDisabled(admin(), false);
+                d.clearPackagePersistentPreferredActivities(admin(), getContext().getPackageName());
+                setHomeEnabled(false);
+                Activity a = getActivity();
+                if (a != null) a.runOnUiThread(() -> { try { a.stopLockTask(); } catch (Exception ignored) {} });
+                d.clearDeviceOwnerApp(getContext().getPackageName());
+            }
+            JSObject o = new JSObject(); o.put("deviceOwner", isDeviceOwner()); call.resolve(o);
+        } catch (Exception e) { call.reject(String.valueOf(e)); }
     }
 
     @Override
