@@ -21,7 +21,8 @@ jobs:
         uses: actions/setup-java@v4
         with: { distribution: temurin, java-version: 21 }
       - id: android
-        uses: android-actions/setup-android@v3
+        name: SDK Android (préinstallé sur le runner)
+        run: echo "ANDROID_HOME=$ANDROID_HOME" && ls $ANDROID_HOME/platforms | tail -3 && (yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses >/dev/null || true)
       - id: keystore
         name: Keystore (si configuré)
         if: env.KS != ''
