@@ -1,0 +1,831 @@
+{
+ "mls_000": {
+  "propre": {
+   "score": 0.0,
+   "exemples_erreurs": [
+    "503→ok, j'y suis, j'y...",
+    "736→tout est par... par... par... par...",
+    "958→oh, oh, oh, oh...",
+    "812→euh, euh, euh, euh, euh, euh.",
+    "392→ro… ro… ro… ro… ro… ro…",
+    "718→on va se offrir à celui-là."
+   ]
+  },
+  "-4dB": {
+   "score": 0.0,
+   "exemples_erreurs": [
+    "503→c'est bon, c'est bon.",
+    "736→merci. merci beaucoup.",
+    "958→ok. merci.",
+    "812→33",
+    "392→329329",
+    "718→c'est bon."
+   ]
+  },
+  "F0_Hz": 103.0
+ },
+ "mls_001": {
+  "propre": {
+   "score": 0.0,
+   "exemples_erreurs": [
+    "503→34293429342",
+    "736→344996848884489999999",
+    "958→ah ah ah ah...",
+    "812→et... la seule parlie, en fait. la seule parlie, en fait.",
+    "392→c'est bon, c'est bon, c'est bon.",
+    "718→329329"
+   ]
+  },
+  "-4dB": {
+   "score": 0.0,
+   "exemples_erreurs": [
+    "503→329",
+    "736→merci. merci. merci. merci. merci. merci.",
+    "958→329",
+    "812→333333",
+    "392→39999999",
+    "718→329329"
+   ]
+  },
+  "F0_Hz": 163.0
+ },
+ "mls_002": {
+  "propre": {
+   "score": 0.0,
+   "exemples_erreurs": [
+    "503→et par vie, c'est plus...",
+    "736→je suis désolé. je suis désolé. je suis désolé.",
+    "958→on va arriver pour la suivante, il est ravie. je dois vraiment arriver.",
+    "812→et oui. au soleil ! au soleil ! au soleil !",
+    "392→c'est bon, c'est bon.",
+    "718→ah, de soi. ah, c'est bon. ah, c'est très bien."
+   ]
+  },
+  "-4dB": {
+   "score": 0.0,
+   "exemples_erreurs": [
+    "503→je n'ai pas vu ce que j'ai vu.",
+    "736→merci. merci. merci.",
+    "958→33333",
+    "812→232121223456789910111112131415161718192021212223242526",
+    "392→c'est bon, c'est bon.",
+    "718→ah oui, c'est bien."
+   ]
+  },
+  "F0_Hz": 155.0
+ },
+ "mls_003": {
+  "propre": {
+   "score": 0.0,
+   "exemples_erreurs": [
+    "503→eh ben, pardon, c'est l'effort.",
+    "736→si, bah, vas-en, vas-en, vas-en, vas-en, vas-en, si, bah.",
+    "958→3",
+    "812→j'ai... j'ai... j'ai... j'ai... j'ai...",
+    "392→c'est bon, c'est bon, c'est bon.",
+    "718→voilà, reçois, pantries, panties, pas de buté, toi."
+   ]
+  },
+  "-4dB": {
+   "score": 0.0,
+   "exemples_erreurs": [
+    "503→on va voir ce qu'il y a.",
+    "736→33333",
+    "958→3429",
+    "812→on va voir ce que j'ai fait.",
+    "392→329329",
+    "718→3333"
+   ]
+  },
+  "F0_Hz": 200.0
+ },
+ "mls_004": {
+  "propre": {
+   "score": 0.0,
+   "exemples_erreurs": [
+    "503→ça, c'est le temps de les laisser passer.",
+    "736→34343434344567827",
+    "958→ah, j'ai faim, j'ai faim.",
+    "812→1",
+    "392→s'il vous plait, s'il vous plait, s'il vous plait, s'il vous plait.",
+    "718→alors de seul, en fait, en fait, en fait."
+   ]
+  },
+  "-4dB": {
+   "score": 0.0,
+   "exemples_erreurs": [
+    "503→34293429",
+    "736→34293429",
+    "958→33333",
+    "812→329329",
+    "392→33333",
+    "718→oh, c'est trop beau."
+   ]
+  },
+  "F0_Hz": 178.0
+ },
+ "mls_005": {
+  "propre": {
+   "score": 0.0,
+   "exemples_erreurs": [
+    "503→1111",
+    "736→1111",
+    "958→on va enlever, enlever, enlever, enlever.",
+    "812→et... ah, c'est... ah, c'est... ah, c'est...",
+    "392→3343",
+    "718→ah, c'est ça. ah, c'est vous. ah."
+   ]
+  },
+  "-4dB": {
+   "score": 0.0,
+   "exemples_erreurs": [
+    "503→le café, le cheveu, c'est super, c'est chouant.",
+    "736→329329",
+    "958→3429",
+    "812→333333",
+    "392→3234545454",
+    "718→3333"
+   ]
+  },
+  "F0_Hz": 89.0
+ },
+ "mls_006": {
+  "propre": {
+   "score": 0.0,
+   "exemples_erreurs": [
+    "503→tu vois, quand les sévères suites se passent, ils sont...",
+    "736→11",
+    "958→vas-y, vas-y, ça va vite, ça va vite, ça va vite.",
+    "812→et c'est bon ? oui, c'est bon.",
+    "392→3343434345678",
+    "718→et j'ai pas hâte de ça, je suis pas possible d'y avoir."
+   ]
+  },
+  "-4dB": {
+   "score": 0.0,
+   "exemples_erreurs": [
+    "503→23456565656",
+    "736→bonne soirée. merci.",
+    "958→3429",
+    "812→3429",
+    "392→3333",
+    "718→1"
+   ]
+  },
+  "F0_Hz": 83.0
+ },
+ "mls_007": {
+  "propre": {
+   "score": 0.0,
+   "exemples_erreurs": [
+    "503→et ça, c'est de la vie, c'est de la vie.",
+    "736→1",
+    "958→allons-y ! allons-y ! allons-y ! allons-y !",
+    "812→336777777",
+    "392→j'ai pas l'enfer, on a pas l'enfer, on a l'enfer, on a l'enfer, on a l'enfer,",
+    "718→et alors, je ne l'ai pas fait et je ne l'ai pas fait."
+   ]
+  },
+  "-4dB": {
+   "score": 0.0,
+   "exemples_erreurs": [
+    "503→333",
+    "736→329",
+    "958→33333",
+    "812→3429",
+    "392→3429",
+    "718→333"
+   ]
+  },
+  "F0_Hz": 142.0
+ },
+ "mls_008": {
+  "propre": {
+   "score": 0.0,
+   "exemples_erreurs": [
+    "503→je te envies ce que tu fais. je fends.",
+    "736→11",
+    "958→ravitz, bravo.",
+    "812→12345678",
+    "392→soudage ? ah, ah, ah, ah, ah, ah, ah, ah, ah, ah, ah, ah, sorry.",
+    "718→a, s, a, a, z, d, b, a."
+   ]
+  },
+  "-4dB": {
+   "score": 0.0,
+   "exemples_erreurs": [
+    "503→3429",
+    "736→33",
+    "958→3333",
+    "812→3429329",
+    "392→33333",
+    "718→329329"
+   ]
+  },
+  "F0_Hz": 152.0
+ },
+ "mls_009": {
+  "propre": {
+   "score": 0.0,
+   "exemples_erreurs": [
+    "503→et puis, on les aide, on fait tout ça.",
+    "736→qu'est-ce qu'il y a ?",
+    "958→ah, je n'avais pas du... je n'avais pas du...",
+    "812→et... je prends à lutter vers ses fans.",
+    "392→c'est bon, c'est bon, c'est bon.",
+    "718→ah, sur, off, off, off, off, off, off."
+   ]
+  },
+  "-4dB": {
+   "score": 0.0,
+   "exemples_erreurs": [
+    "503→et puis, on les écoute, on les écoute.",
+    "736→329329",
+    "958→33",
+    "812→3429329",
+    "392→333333",
+    "718→merci beaucoup. merci beaucoup."
+   ]
+  },
+  "F0_Hz": 165.0
+ },
+ "mls_010": {
+  "propre": {
+   "score": 0.0,
+   "exemples_erreurs": [
+    "503→334565656565",
+    "736→chez, par fort, par hausse, par hausse, par hausse...",
+    "958→arrêtez, parfait, parfait, parfait... arrêtez, parfait.",
+    "812→et bien, paris, paris.",
+    "392→333",
+    "718→c'est par ce qu'il parle, c'est par le fait qu'il parle."
+   ]
+  },
+  "-4dB": {
+   "score": 0.0,
+   "exemples_erreurs": [
+    "503→1",
+    "736→merci. merci.",
+    "958→34293429",
+    "812→34567",
+    "392→333333",
+    "718→123"
+   ]
+  },
+  "F0_Hz": 109.0
+ },
+ "mls_011": {
+  "propre": {
+   "score": 0.0,
+   "exemples_erreurs": [
+    "503→si tu parles, tu sais que c'est ça.",
+    "736→1111",
+    "958→1",
+    "812→12345678",
+    "392→c'est ma chaleur. parfait. parfait. parfait. parfait.",
+    "718→ah, monsieur. ah, j'ai les vies."
+   ]
+  },
+  "-4dB": {
+   "score": 0.0,
+   "exemples_erreurs": [
+    "503→et puis, parmi les chansons, les chansons.",
+    "736→329",
+    "958→3329",
+    "812→merci beaucoup.",
+    "392→333333",
+    "718→33333"
+   ]
+  },
+  "F0_Hz": 186.0
+ },
+ "mls_012": {
+  "propre": {
+   "score": 0.0,
+   "exemples_erreurs": [
+    "503→23456789",
+    "736→3456",
+    "958→ah, c'est pas super, il y en a encore ici.",
+    "812→et j'ai... j'ai... j'ai... j'ai... j'ai...",
+    "392→je vais pas faire, je vais pas faire, je vais pas faire, pas de changer.",
+    "718→ah, c'est de l'huile."
+   ]
+  },
+  "-4dB": {
+   "score": 0.0,
+   "exemples_erreurs": [
+    "503→329329",
+    "736→6787878787",
+    "958→1234567",
+    "812→2345656565",
+    "392→qu'est-ce qu'elle va manger ? muche mire je veariokay.",
+    "718→34293429"
+   ]
+  },
+  "F0_Hz": 160.0
+ },
+ "mls_013": {
+  "propre": {
+   "score": 0.0,
+   "exemples_erreurs": [
+    "503→oui, c'est ça.",
+    "736→et puis, c'était pas bon, pas vécu, pas vécu.",
+    "958→ah, ça va bien, ça va bien.",
+    "812→oui. ah, ah, ah, ah, oui, t'il s'est...",
+    "392→merci, merci. merci aux gens. ah, c'est ça.",
+    "718→1"
+   ]
+  },
+  "-4dB": {
+   "score": 0.0,
+   "exemples_erreurs": [
+    "503→allez, c'est bon.",
+    "736→33",
+    "958→329",
+    "812→c'est bon.",
+    "392→et c'est tout. merci beaucoup. merci beaucoup.",
+    "718→329"
+   ]
+  },
+  "F0_Hz": 103.0
+ },
+ "mls_014": {
+  "propre": {
+   "score": 0.0,
+   "exemples_erreurs": [
+    "503→je suis très heureuse. je suis très heureuse.",
+    "736→sous-titres réalisés par la communauté d'amara.org",
+    "958→bonne journée, bonsoir, bonsoir, bonsoir! bonsoir!",
+    "812→ok. ah ça va ? bah oui. bah j'ai su passer par ça.",
+    "392→c'est dans ce... dans ce... dans ce... dans ce... dans ce...",
+    "718→ah, c'était joli."
+   ]
+  },
+  "-4dB": {
+   "score": 0.0,
+   "exemples_erreurs": [
+    "503→333",
+    "736→merci. merci. merci. merci. merci.",
+    "958→329",
+    "812→3345656565",
+    "392→329",
+    "718→329329"
+   ]
+  },
+  "F0_Hz": 203.0
+ },
+ "mls_015": {
+  "propre": {
+   "score": 0.0,
+   "exemples_erreurs": [
+    "503→2329",
+    "736→t, a, a, sombre. as, u, pa, s, i, pa, s, i, s, i, d, l, u, s, i, d, l, u, s, i, d, l, u, s, i, d",
+    "958→arrêtez, arrêtez, arrêtez. arrêtez, arrêtez, arrêtez.",
+    "812→et là, c'est bon, on arrive, on arrive, c'est bon, c'est bon",
+    "392→se blâche.. ah.. blâche. blâche, je ne parlais pas, j'ai pas râché. blâche... blâche, j'ai pas râlé.",
+    "718→je n'ai pas raison. je n'ai pas fait péter. je n'ai pas..."
+   ]
+  },
+  "-4dB": {
+   "score": 0.0,
+   "exemples_erreurs": [
+    "503→1",
+    "736→329329",
+    "958→33333",
+    "812→78968101112131415161719",
+    "392→33333",
+    "718→le son de la mort, le son de la mort, le son de la mort."
+   ]
+  },
+  "F0_Hz": 163.0
+ },
+ "mls_016": {
+  "propre": {
+   "score": 0.0,
+   "exemples_erreurs": [
+    "503→pas vrai, c'est...",
+    "736→34565654556565",
+    "958→ah, j'ai failli, j'ai failli.",
+    "812→et il est... ah c'est... ah c'est...",
+    "392→super chat, barche. barche, barche, tu vas le faire. barche. tu vas le faire.",
+    "718→c'est bon, c'est bon."
+   ]
+  },
+  "-4dB": {
+   "score": 0.0,
+   "exemples_erreurs": [
+    "503→et c'est parti, c'est parti.",
+    "736→333333",
+    "958→3333",
+    "812→vous allez bien ? ah, j'ai écouté.",
+    "392→329329",
+    "718→3234565"
+   ]
+  },
+  "F0_Hz": 99.0
+ },
+ "mls_017": {
+  "propre": {
+   "score": 0.0,
+   "exemples_erreurs": [
+    "503→1",
+    "736→t, a, r, v, r, v, r, a, r, c, t, a, r",
+    "958→arrête-moi ! arrête-moi ! arrête-moi ! arrête-moi !",
+    "812→c'est... euh... arami. arami, c'est ça, c'est... c'est ça ?",
+    "392→sous-titres réalisés par la communauté d'amara.org",
+    "718→oh, c'est... oh, c'est... oh, c'est... oh..."
+   ]
+  },
+  "-4dB": {
+   "score": 0.0,
+   "exemples_erreurs": [
+    "503→329",
+    "736→234456565",
+    "958→329329",
+    "812→et... ah oui, on a vu que tu l'as rassuré comme ça.",
+    "392→24545454545",
+    "718→12345678"
+   ]
+  },
+  "F0_Hz": 148.0
+ },
+ "mls_018": {
+  "propre": {
+   "score": 0.0,
+   "exemples_erreurs": [
+    "503→je vais dans les basseurs, allez, à la, à la, à la, à la, à la, à la, sur la.",
+    "736→c'est bien, hein ? ah, c'est bon ? ah, c'est bon, c'est bon, c'est bon.",
+    "958→parfait. parfait. parfait. parfait.",
+    "812→1",
+    "392→et c'est off, off, off, off, off, off.",
+    "718→je sais pas, je sais pas, je sais pas."
+   ]
+  },
+  "-4dB": {
+   "score": 0.0,
+   "exemples_erreurs": [
+    "503→3333",
+    "736→329329",
+    "958→34293429",
+    "812→3295784585858585858",
+    "392→et c'est proche, proche, proche, proche, proche, proche.",
+    "718→33333"
+   ]
+  },
+  "F0_Hz": 190.0
+ },
+ "mls_019": {
+  "propre": {
+   "score": 0.0,
+   "exemples_erreurs": [
+    "503→et je te ferai, t'as rien sue-e-e-e-e-e-e-e-e-e-e-e-e-e-e-e-e-e-e-e-e-e-e-e-e-e-e-e-e-e-e-e-e",
+    "736→c'est... ah... ah... c'est... ah...",
+    "958→ah non, c'est pas possible, ah non, c'est pas possible.",
+    "812→qu'est-ce que c'est que ça ?",
+    "392→c'est pas ça ! ah c'est pas ça ! c'est pas ça ! ah c'est pas ça !",
+    "718→c'est à va, c'est à va, c'est à va."
+   ]
+  },
+  "-4dB": {
+   "score": 0.0,
+   "exemples_erreurs": [
+    "503→merci beaucoup.",
+    "736→3429",
+    "958→329",
+    "812→3429",
+    "392→merci beaucoup. merci beaucoup. merci beaucoup. merci beaucoup.",
+    "718→32999"
+   ]
+  },
+  "F0_Hz": 178.0
+ },
+ "mls_020": {
+  "propre": {
+   "score": 0.0,
+   "exemples_erreurs": [
+    "503→t'as vu ? t'as vu ? t'as vu ? t'as vu ?",
+    "736→c'est bon. bonne soirée. bonne soirée.",
+    "958→ah, c'est ça ! c'est ça, c'est ça !",
+    "812→1111",
+    "392→c'est pas ça. c'est pas ça.",
+    "718→3299999"
+   ]
+  },
+  "-4dB": {
+   "score": 0.0,
+   "exemples_erreurs": [
+    "503→on a l'air de prendre des sacs de poche.",
+    "736→2334565657",
+    "958→3333",
+    "812→c'est bon ? c'est bon.",
+    "392→33333",
+    "718→333333"
+   ]
+  },
+  "F0_Hz": 123.0
+ },
+ "mls_021": {
+  "propre": {
+   "score": 0.0,
+   "exemples_erreurs": [
+    "503→329329",
+    "736→c'est pas, pas ça, pas ça, pas ça, pas ça, c'est pas ça, c'est ça.",
+    "958→je n'ai pas assez, je suis ravi.",
+    "812→tu... tu sais bien, allez, passez, puis passez, passez ça.",
+    "392→c'est ça, c'est ça, c'est ça.",
+    "718→ah, le soleil, parfait, parfait."
+   ]
+  },
+  "-4dB": {
+   "score": 0.0,
+   "exemples_erreurs": [
+    "503→1",
+    "736→345678",
+    "958→329",
+    "812→34456565",
+    "392→329",
+    "718→ah, c'est ça."
+   ]
+  },
+  "F0_Hz": 117.0
+ },
+ "mls_022": {
+  "propre": {
+   "score": 0.0,
+   "exemples_erreurs": [
+    "503→j'ai fait de l'envers, j'ai fait de l'envers.",
+    "736→et on se dégage, et on se業. wouh... outdoors, courtesy, et c'est vrai...",
+    "958→ah, j'ai failli, j'ai failli.",
+    "812→et... ah si, ah si, ah si, ah si.",
+    "392→c'est pas ça. ah, c'est... ah, c'est... ah, c'est...",
+    "718→7779"
+   ]
+  },
+  "-4dB": {
+   "score": 0.0,
+   "exemples_erreurs": [
+    "503→nous sommes dans l'expédition. nous sommes dans l'expédition.",
+    "736→merci. merci. merci.",
+    "958→et c'est pour ça qu'on est venus, on est venus.",
+    "812→123",
+    "392→334933",
+    "718→merci beaucoup. merci beaucoup."
+   ]
+  },
+  "F0_Hz": 208.0
+ },
+ "mls_023": {
+  "propre": {
+   "score": 0.0,
+   "exemples_erreurs": [
+    "503→323456565656565",
+    "736→c.r.e.s.e.a.",
+    "958→moi aussi, moi aussi, moi aussi, moi aussi, moi aussi.",
+    "812→et... qu'est-ce que c'est que ça ?",
+    "392→c'est bon, c'est bon.",
+    "718→11"
+   ]
+  },
+  "-4dB": {
+   "score": 0.0,
+   "exemples_erreurs": [
+    "503→3429",
+    "736→345656565",
+    "958→329429",
+    "812→on va voir ce qu'il y a. on va voir ce qu'il y a.",
+    "392→333333",
+    "718→329329"
+   ]
+  },
+  "F0_Hz": 182.0
+ },
+ "kokoro_siwis_F_090": {
+  "propre": {
+   "score": 85.0,
+   "exemples_erreurs": [
+    "736→36",
+    "184→284",
+    "739→39",
+    "174→274",
+    "816→86",
+    "109→09"
+   ]
+  },
+  "+0dB": {
+   "score": 52.5,
+   "exemples_erreurs": [
+    "736→36",
+    "958→908",
+    "812→82",
+    "718→78",
+    "165→non, c'est ça.",
+    "475→465"
+   ]
+  },
+  "-4dB": {
+   "score": 15.0,
+   "exemples_erreurs": [
+    "503→10",
+    "736→qu'est-ce que c'est ?",
+    "958→9",
+    "812→82",
+    "392→3",
+    "718→c'est tranquille."
+   ]
+  },
+  "-8dB": {
+   "score": 0.0,
+   "exemples_erreurs": [
+    "503→333",
+    "736→c'est pour moi.",
+    "958→3429",
+    "812→merci beaucoup.",
+    "392→",
+    "718→3429"
+   ]
+  },
+  "F0_Hz": 242.0
+ },
+ "kokoro_siwis_F_100": {
+  "propre": {
+   "score": 87.5,
+   "exemples_erreurs": [
+    "736→36",
+    "718→78",
+    "270→70",
+    "732→32",
+    "739→39"
+   ]
+  },
+  "+0dB": {
+   "score": 60.0,
+   "exemples_erreurs": [
+    "736→36",
+    "812→82",
+    "392→22",
+    "718→78",
+    "165→oh, c'est ça.",
+    "475→47"
+   ]
+  },
+  "-4dB": {
+   "score": 5.0,
+   "exemples_erreurs": [
+    "503→c'est pour toi.",
+    "736→3",
+    "958→9",
+    "812→82",
+    "392→24",
+    "718→c'est tant mieux."
+   ]
+  },
+  "-8dB": {
+   "score": 0.0,
+   "exemples_erreurs": [
+    "503→329",
+    "736→620",
+    "958→et là, c'est parti.",
+    "812→329",
+    "392→20",
+    "718→329"
+   ]
+  },
+  "F0_Hz": 246.0
+ },
+ "piper_siwis_F": {
+  "propre": {
+   "score": 92.5,
+   "exemples_erreurs": [
+    "812→12",
+    "732→1732",
+    "928→8"
+   ]
+  },
+  "+0dB": {
+   "score": 55.0,
+   "exemples_erreurs": [
+    "736→36",
+    "958→alors, c'est ça ?",
+    "812→2",
+    "392→3292",
+    "718→12345678910",
+    "475→465"
+   ]
+  },
+  "-4dB": {
+   "score": 10.0,
+   "exemples_erreurs": [
+    "503→5213",
+    "736→36",
+    "958→ça c'est ça ?",
+    "812→2",
+    "392→12345",
+    "718→c'est up."
+   ]
+  },
+  "-8dB": {
+   "score": 0.0,
+   "exemples_erreurs": [
+    "503→345",
+    "736→333",
+    "958→merci beaucoup.",
+    "812→329",
+    "392→39",
+    "718→1"
+   ]
+  },
+  "F0_Hz": 196.0
+ },
+ "piper_upmc_jessica_F": {
+  "propre": {
+   "score": 87.5,
+   "exemples_erreurs": [
+    "208→2",
+    "487→87",
+    "684→6810",
+    "548→148",
+    "258→58"
+   ]
+  },
+  "+0dB": {
+   "score": 57.5,
+   "exemples_erreurs": [
+    "503→103",
+    "718→78",
+    "426→26",
+    "069→329",
+    "475→1234",
+    "208→22228"
+   ]
+  },
+  "-4dB": {
+   "score": 17.5,
+   "exemples_erreurs": [
+    "503→34293",
+    "958→256",
+    "812→1212",
+    "392→3292",
+    "718→1",
+    "426→226"
+   ]
+  },
+  "-8dB": {
+   "score": 0.0,
+   "exemples_erreurs": [
+    "503→329",
+    "736→536",
+    "958→95",
+    "812→3429",
+    "392→329",
+    "718→"
+   ]
+  },
+  "F0_Hz": 246.0
+ },
+ "piper_upmc_pierre_M": {
+  "propre": {
+   "score": 87.5,
+   "exemples_erreurs": [
+    "426→26",
+    "487→87",
+    "548→148",
+    "167→166",
+    "486→86"
+   ]
+  },
+  "+0dB": {
+   "score": 47.5,
+   "exemples_erreurs": [
+    "736→2736",
+    "718→3718",
+    "426→3426",
+    "069→1069",
+    "475→12345",
+    "710→7710"
+   ]
+  },
+  "-4dB": {
+   "score": 7.5,
+   "exemples_erreurs": [
+    "503→3333",
+    "736→36",
+    "958→et là, c'est parti.",
+    "812→3812",
+    "392→123",
+    "718→6321"
+   ]
+  },
+  "-8dB": {
+   "score": 0.0,
+   "exemples_erreurs": [
+    "503→3429",
+    "736→3736",
+    "958→333",
+    "812→3212",
+    "392→329",
+    "718→très bien."
+   ]
+  },
+  "F0_Hz": 131.0
+ }
+}
