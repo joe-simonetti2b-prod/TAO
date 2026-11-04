@@ -1,6 +1,7 @@
 // Procédure du test tonal de dépistage (module 1)
 import { FREQUENCIES, EARS } from './config.js';
-import { playHL } from './audio.js';
+import { playHL, hlToDbfs } from './audio.js';
+import { MAX_DBFS } from './config.js';
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const rand = (a, b) => a + Math.random() * (b - a);
@@ -51,13 +52,13 @@ export class ToneTest {
   }
 
   // Une présentation : renvoie true si le client a répondu dans la fenêtre
-  async present(ear, freq) {
+  async present(ear, freq, dbHL = null, quick = false) {
     const s = this.o.settings;
-    await sleep(rand(s.isiMin, s.isiMax) * 1000);
+    await sleep((quick ? rand(1.0, 2.0) : rand(s.isiMin, s.isiMax)) * 1000);
     await this.waitIfPaused();
     if (this.aborted) return null;
     const noisy = await this.waitQuiet(freq);
-    const h = playHL({ calib: this.o.calib, freq, ear, dbHL: this.levelFor(freq),
+    const h = playHL({ calib: this.o.calib, freq, ear, dbHL: dbHL ?? this.levelFor(freq),
                        duration: s.stimulusDuration, type: s.stimulusType });
     const winEnd = h.offsetMs + s.responseWindowAfter * 1000;
     // Fin anticipée dès qu'une réponse arrive (le son est coupé, comme en audiométrie)
@@ -121,6 +122,40 @@ export class ToneTest {
     }
 
     if (this.aborted) return { aborted: true };
+
+    // ---- Palier de confirmation : fréquences manquées rejouées à 50 puis 70 dB HL ----
+    // Donne une indication de l'importance de la perte (pour l'audioprothésiste uniquement).
+    const missedFirst = [];
+    for (const ear of EARS) for (const freq of FREQUENCIES) if (!result[ear][freq].heard) missedFirst.push({ ear, freq });
+    if (s.confirmEnabled !== false && missedFirst.length && catchFP <= s.maxFalsePositives) {
+      await this.o.hooks?.onPhase?.('confirm', missedFirst.length);
+      let idx = 0;
+      for (const { ear, freq } of missedFirst) {
+        if (this.aborted) break;
+        if (ear !== lastEar) { lastEar = ear; await this.o.hooks?.onEarChange?.(ear, true); }
+        this.o.hooks?.onTrial?.(ear, freq, idx++, missedFirst.length, true);
+        const conf = {};
+        for (const lvl of (s.confirmLevels || [50, 70])) {
+          let dbfs;
+          try { dbfs = hlToDbfs(this.o.calib, ear, freq, lvl); } catch { dbfs = Infinity; }
+          if (dbfs > MAX_DBFS) { conf[lvl] = 'hors_plage'; break; }
+          // 1 présentation par palier ; au dernier palier, une 2e chance avant de conclure
+          const last = lvl === (s.confirmLevels || [50, 70]).slice(-1)[0];
+          const answers = [];
+          for (let k = 0; k < (last ? 2 : 1) && !this.aborted; k++) {
+            const r = await this.present(ear, freq, lvl, true);
+            if (!r) break;
+            answers.push(r.heard);
+            if (r.heard) break;
+          }
+          const heard = answers.some(Boolean);
+          conf[lvl] = heard;
+          if (heard) break;
+        }
+        result[ear][freq].confirm = conf;
+      }
+      if (this.aborted) return { aborted: true };
+    }
 
     const missed = [];
     for (const ear of EARS) for (const freq of FREQUENCIES) if (!result[ear][freq].heard) missed.push({ ear, freq });

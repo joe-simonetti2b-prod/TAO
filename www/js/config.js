@@ -4,7 +4,7 @@
 export const APP = {
   name: 'TAO',
   fullName: 'Test Auditif Optique',
-  version: '0.4.0',
+  version: '0.5.0',
   brand: 'Balbi Audition',
 };
 
@@ -31,6 +31,8 @@ export const DEFAULT_SETTINGS = {
   stimulusType: 'theme',       // 'theme' (sons ludiques) ou 'pulsed' (son pur pulsé)
   stimulusDuration: 2.0,       // secondes par présentation (1,5 à 3 s)
   responseWindowAfter: 1.5,    // s acceptées après la fin du son
+  confirmEnabled: true,        // palier de confirmation sur les fréquences manquées
+  confirmLevels: [50, 70],     // dB HL
   catchTrials: 3,              // essais muets
   maxFalsePositives: 1,        // au-delà → résultat non fiable
   isiMin: 1.5, isiMax: 4.0,    // intervalle aléatoire avant chaque son (s)

@@ -8,6 +8,8 @@ const K = {
   pins: 'tao.pins',
   daily: 'tao.dailycheck',
   seq: 'tao.seq',
+  history: 'tao.calib.history',
+  periodic: 'tao.periodic',
 };
 
 // Sel interne pour l'empreinte d'intégrité de l'étalonnage
@@ -70,18 +72,18 @@ export function emptyCalibration() {
 }
 
 async function sealOf(c) {
-  const core = JSON.stringify({ ref: c.ref, date: c.date, method: c.method,
+  const core = JSON.stringify({ ref: c.ref, date: c.date, method: c.method, btName: c.btName || null,
     headsetMode: c.headsetMode, volumeIndex: c.volumeIndex });
   return sha256(SEAL + core);
 }
 
-export function getCalibrationRaw() {
-  return read(K.calib, null) || emptyCalibration();
+export function getCalibrationRaw(profile = 'wired') {
+  return read(profile === 'bt' ? K.calib + '.bt' : K.calib, null) || emptyCalibration();
 }
 
 // Renvoie { calib, valid, complete, reason }
-export async function getCalibration() {
-  const c = getCalibrationRaw();
+export async function getCalibration(profile = 'wired') {
+  const c = getCalibrationRaw(profile);
   const complete = EARS.every(e => FREQUENCIES.every(f => typeof c.ref?.[e]?.[f] === 'number'));
   if (!c.date) return { calib: c, valid: false, complete, reason: 'Aucun étalonnage enregistré' };
   const ok = c.seal && c.seal === await sealOf(c);
@@ -90,15 +92,23 @@ export async function getCalibration() {
   return { calib: c, valid: true, complete, reason: '' };
 }
 
-export async function saveCalibration(c) {
+export async function saveCalibration(c, profile = 'wired') {
   c.date = c.date || new Date().toISOString();
   c.seal = await sealOf(c);
-  write(K.calib, c);
+  write(profile === 'bt' ? K.calib + '.bt' : K.calib, c);
+  const h = read(K.history, []) || [];
+  h.push({ date: c.date, method: c.method, profile, headsetMode: c.headsetMode, volumeIndex: c.volumeIndex, btName: c.btName || null });
+  write(K.history, h.slice(-50));
   return c;
 }
+export function getCalibrationHistory() { return read(K.history, []) || []; }
+
+// ---------- Contrôle périodique (auditeur référent) ----------
+export function getPeriodic() { return read(K.periodic, null); }
+export function savePeriodic(p) { write(K.periodic, p); }
 
 // Sauvegarde des données de travail (sujets, bruit) sans valider l'étalonnage
-export function saveCalibrationDraft(c) { write(K.calib, c); }
+export function saveCalibrationDraft(c, profile = 'wired') { write(profile === 'bt' ? K.calib + '.bt' : K.calib, c); }
 
 // ---------- Résultats ----------
 export function getResults() { return read(K.results, []); }

@@ -71,3 +71,18 @@ export async function audioRouteOk(trialMode = false) {
   if (!s.wired) return { ok: false, reason: 'Le casque filaire n’est pas branché.', status: s };
   return { ok: true, demo: false, status: s };
 }
+
+export async function getAudioSettings() {
+  const p = plugin(); if (!p) return { mono: null, balance: null };
+  try { return await p.getAudioSettings(); } catch { return { mono: null, balance: null }; }
+}
+export async function openSettings(page) {
+  const p = plugin(); if (!p) return false;
+  try { await p.openSettings({ page }); return true; } catch { return false; }
+}
+
+// Authenticité de l'APK (signature officielle)
+export async function getIntegrity() {
+  const p = plugin(); if (!p) return { ok: true, native: false };
+  try { return { native: true, ...(await p.getIntegrity()) }; } catch { return { ok: true, native: true, unknown: true }; }
+}

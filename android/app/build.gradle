@@ -7,8 +7,8 @@ android {
         applicationId "fr.weave.tao"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 4
-        versionName "0.4.0"
+        versionCode 5
+        versionName "0.5.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
@@ -26,11 +26,16 @@ android {
             }
         }
     }
+    buildFeatures { buildConfig true }
     buildTypes {
         debug {
+            buildConfigField "String", "TAO_CERT_SHA256", "\"\""
             // build de phase test : installable directement
         }
         release {
+            // Empreinte du certificat de signature officiel : toute version re-signée est refusée au lancement
+            buildConfigField "String", "TAO_CERT_SHA256", "\"CFCAC7EE5E985EBB0226FEDE4ADED8949D5313AD16B27A19658A6F465D00BE14\""
+            debuggable false
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'

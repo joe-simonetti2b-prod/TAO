@@ -51,11 +51,15 @@ public class TaoDevicePlugin extends Plugin {
 
     private JSObject status() {
         boolean wired = false, bluetooth = false, usb = false;
+        String btName = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             for (AudioDeviceInfo d : am.getDevices(AudioManager.GET_DEVICES_OUTPUTS)) {
                 int t = d.getType();
                 if (t == AudioDeviceInfo.TYPE_WIRED_HEADPHONES || t == AudioDeviceInfo.TYPE_WIRED_HEADSET) wired = true;
-                if (t == AudioDeviceInfo.TYPE_BLUETOOTH_A2DP || t == AudioDeviceInfo.TYPE_BLUETOOTH_SCO) bluetooth = true;
+                if (t == AudioDeviceInfo.TYPE_BLUETOOTH_A2DP || t == AudioDeviceInfo.TYPE_BLUETOOTH_SCO) {
+                    bluetooth = true;
+                    if (btName == null && d.getProductName() != null) btName = d.getProductName().toString();
+                }
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && (t == AudioDeviceInfo.TYPE_BLE_HEADSET || t == AudioDeviceInfo.TYPE_BLE_SPEAKER)) bluetooth = true;
                 if (t == AudioDeviceInfo.TYPE_USB_HEADSET || t == AudioDeviceInfo.TYPE_USB_DEVICE) usb = true;
             }
@@ -71,6 +75,7 @@ public class TaoDevicePlugin extends Plugin {
         o.put("bluetooth", bluetooth);
         o.put("usb", usb);
         o.put("route", route);
+        o.put("btName", btName);
         o.put("volumeIndex", am.getStreamVolume(AudioManager.STREAM_MUSIC));
         o.put("volumeMax", am.getStreamMaxVolume(AudioManager.STREAM_MUSIC));
         o.put("locked", volumeLocked);
@@ -218,6 +223,68 @@ public class TaoDevicePlugin extends Plugin {
         }
         if (a != null) a.runOnUiThread(() -> { try { a.stopLockTask(); } catch (Exception ignored) {} });
         call.resolve();
+    }
+
+    // Contrôle d'authenticité : la version doit être signée avec le certificat officiel TAO
+    @PluginMethod
+    public void getIntegrity(PluginCall call) {
+        JSObject o = new JSObject();
+        String expected = BuildConfig.TAO_CERT_SHA256;
+        String actual = "";
+        try {
+            PackageManager pm = getContext().getPackageManager();
+            String pkg = getContext().getPackageName();
+            android.content.pm.Signature[] sigs;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                android.content.pm.PackageInfo pi = pm.getPackageInfo(pkg, PackageManager.GET_SIGNING_CERTIFICATES);
+                sigs = pi.signingInfo.getApkContentsSigners();
+            } else {
+                //noinspection deprecation
+                sigs = pm.getPackageInfo(pkg, PackageManager.GET_SIGNATURES).signatures;
+            }
+            java.security.MessageDigest md = java.security.MessageDigest.getInstance("SHA-256");
+            byte[] h = md.digest(sigs[0].toByteArray());
+            StringBuilder sb = new StringBuilder();
+            for (byte b : h) sb.append(String.format("%02X", b));
+            actual = sb.toString();
+        } catch (Exception e) { o.put("error", String.valueOf(e)); }
+        boolean debuggable = (getContext().getApplicationInfo().flags & android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE) != 0;
+        o.put("expected", expected);
+        o.put("actual", actual);
+        o.put("debuggable", debuggable);
+        o.put("ok", expected == null || expected.isEmpty() || expected.equalsIgnoreCase(actual));
+        call.resolve(o);
+    }
+
+    // Réglages audio d'accessibilité (lecture seule) : audio mono et balance gauche/droite
+    @PluginMethod
+    public void getAudioSettings(PluginCall call) {
+        JSObject o = new JSObject();
+        try { o.put("mono", android.provider.Settings.System.getInt(getContext().getContentResolver(), "master_mono", 0) == 1); }
+        catch (Exception e) { o.put("mono", JSObject.NULL); }
+        try { o.put("balance", android.provider.Settings.System.getFloat(getContext().getContentResolver(), "master_balance", 0f)); }
+        catch (Exception e) { o.put("balance", JSObject.NULL); }
+        call.resolve(o);
+    }
+
+    // Ouvre une page des réglages Android (assistant d'installation)
+    @PluginMethod
+    public void openSettings(PluginCall call) {
+        String page = call.getString("page", "settings");
+        String action;
+        switch (page) {
+            case "bluetooth": action = android.provider.Settings.ACTION_BLUETOOTH_SETTINGS; break;
+            case "accessibility": action = android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS; break;
+            case "sound": action = android.provider.Settings.ACTION_SOUND_SETTINGS; break;
+            case "display": action = android.provider.Settings.ACTION_DISPLAY_SETTINGS; break;
+            default: action = android.provider.Settings.ACTION_SETTINGS;
+        }
+        try {
+            Intent i = new Intent(action);
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            getContext().startActivity(i);
+            call.resolve();
+        } catch (Exception e) { call.reject(String.valueOf(e)); }
     }
 
     // Quitter l'application (réservé à l'administrateur, après code)

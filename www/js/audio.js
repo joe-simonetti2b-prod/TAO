@@ -244,6 +244,36 @@ export class NoiseMonitor {
     return 10 * Math.log10(p + 1e-20);
   }
 
+  // Niveau global pondéré A (dB relatifs au micro ; + offset d'étalonnage = dB(A))
+  levelA() {
+    if (!this.analyser) return null;
+    this.analyser.getFloatFrequencyData(this.bins);
+    const sr = getContext().sampleRate, hz = sr / this.analyser.fftSize;
+    if (!this._aw || this._aw.length !== this.bins.length) {
+      this._aw = new Float32Array(this.bins.length);
+      for (let i = 0; i < this.bins.length; i++) {
+        const f = Math.max(1, i * hz), f2 = f * f;
+        const ra = (12194 ** 2 * f2 * f2) / ((f2 + 20.6 ** 2) * Math.sqrt((f2 + 107.7 ** 2) * (f2 + 737.9 ** 2)) * (f2 + 12194 ** 2));
+        const a = 20 * Math.log10(ra) + 2.0;
+        this._aw[i] = f < 20 ? 0 : Math.pow(10, a / 10);
+      }
+    }
+    let p = 0;
+    for (let i = 1; i < this.bins.length; i++) p += Math.pow(10, this.bins[i] / 10) * this._aw[i];
+    return 10 * Math.log10(p + 1e-20);
+  }
+
+  // Leq pondéré A sur une durée (ms)
+  async leqA(ms = 3000) {
+    let acc = 0, n = 0;
+    const end = performance.now() + ms;
+    while (performance.now() < end) {
+      const l = this.levelA(); if (l !== null) { acc += Math.pow(10, l / 10); n++; }
+      await new Promise(r => setTimeout(r, 100));
+    }
+    return n ? 10 * Math.log10(acc / n) : null;
+  }
+
   levels(freqs) {
     const out = {};
     for (const f of freqs) out[f] = this.bandLevel(f);
