@@ -1,4 +1,6 @@
 name: Build APK TAO
+permissions:
+  contents: write
 on:
   push:
     branches: [ main ]
@@ -21,7 +23,7 @@ jobs:
       - name: Web (obfusqué) + synchronisation Android
         run: npm run sync
       - name: APK de phase test (debug)
-        run: cd android && chmod +x gradlew && ./gradlew assembleDebug --no-daemon
+        run: cd android && chmod +x gradlew && set -o pipefail && ./gradlew assembleDebug --no-daemon 2>&1 | tee ../build.log
       - name: Keystore (si configuré)
         if: env.KS != ''
         run: echo "$KS" | base64 -d > $RUNNER_TEMP/tao.jks && echo "TAO_KEYSTORE=$RUNNER_TEMP/tao.jks" >> $GITHUB_ENV
@@ -39,3 +41,21 @@ jobs:
             android/app/build/outputs/apk/debug/*.apk
             android/app/build/outputs/apk/release/*.apk
           if-no-files-found: warn
+      - name: Statut du build (branche ci-status)
+        if: always()
+        run: |
+          mkdir -p status && cp -f build.log status/ 2>/dev/null || true
+          echo "run=${{ github.run_number }} commit=${{ github.sha }} job=${{ job.status }} date=$(date -u +%FT%TZ)" > status/STATUS.txt
+          ls -la android/app/build/outputs/apk/*/ >> status/STATUS.txt 2>&1 || true
+          tail -c 60000 status/build.log > status/build_tail.log 2>/dev/null || true; rm -f status/build.log
+          cd status && git init -q -b ci-status && git config user.name tao-ci && git config user.email ci@tao.local
+          git add -A && git commit -qm "Statut run ${{ github.run_number }}"
+          git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}" ci-status
+      - name: Publier l'APK de phase test (release « phase-test »)
+        if: success()
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: phase-test
+          name: TAO – phase test (build ${{ github.run_number }})
+          prerelease: true
+          files: android/app/build/outputs/apk/debug/app-debug.apk

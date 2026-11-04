@@ -1,0 +1,28 @@
+name: Génération des voix (chiffres)
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths: [ 'tools/voices/**', '.github/workflows/voices.yml' ]
+permissions:
+  contents: write
+jobs:
+  voices:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.10' }
+      - name: Piper
+        run: pip install "piper-tts==1.2.0" 2>&1 | tee pip.log
+      - name: Génération
+        run: python tools/voices/generate.py 2>&1 | tee gen.log
+      - name: Publier sur la branche voices-raw
+        if: always()
+        run: |
+          mkdir -p out && cp -f pip.log gen.log out/ 2>/dev/null || true
+          cd out
+          git init -q -b voices-raw
+          git config user.name "tao-ci"; git config user.email "ci@tao.local"
+          git add -A && git commit -qm "Voix générées – run ${{ github.run_number }}"
+          git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}" voices-raw
