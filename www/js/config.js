@@ -4,7 +4,7 @@
 export const APP = {
   name: 'TAO',
   fullName: 'Test Auditif Optique',
-  version: '0.2.0',
+  version: '0.3.0',
   brand: 'Balbi Audition',
 };
 

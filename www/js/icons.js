@@ -24,8 +24,8 @@ export const ICONS = {
     <path d="M34 62q-12 4-16 16q14-2 22-8z" fill="#B33A36"/><path d="M48 62q8 14 24 8" fill="none" stroke="#F3B4B2" stroke-width="5" stroke-linecap="round"/>
     <path d="M52 86v10M62 86v10" stroke="#E0A100" stroke-width="4" stroke-linecap="round"/>
     ${wave(98, 30, '#D9534F')}</svg>`,
-  headset: `<svg viewBox="0 0 240 200"><path d="M40 120V100a80 80 0 0 1 160 0v20" fill="none" stroke="#12263A" stroke-width="14" stroke-linecap="round"/>
-    <rect x="18" y="104" width="46" height="74" rx="20" fill="#1565C0"/><rect x="176" y="104" width="46" height="74" rx="20" fill="#C62828"/>
+  headset: `<svg viewBox="0 0 240 200"><path d="M40 120V100a80 80 0 0 1 160 0v20" fill="none" stroke="#17324D" stroke-width="14" stroke-linecap="round"/>
+    <rect class="cup l" x="18" y="104" width="46" height="74" rx="20" fill="#2F73C5"/><rect class="cup r" x="176" y="104" width="46" height="74" rx="20" fill="#D9533E"/>
     <text x="41" y="152" font-size="30" font-weight="900" fill="#fff" text-anchor="middle" font-family="sans-serif">G</text>
     <text x="199" y="152" font-size="30" font-weight="900" fill="#fff" text-anchor="middle" font-family="sans-serif">D</text></svg>`,
   ok: `<svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="58" fill="#E3F4EE"/><path d="M34 62l18 18 36-38" fill="none" stroke="#0E8A6A" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/></svg>`,

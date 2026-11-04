@@ -1,0 +1,7 @@
+{
+ "piper_siwis_F": "Voix « SIWIS » – données SIWIS, Université d'Édimbourg (CC-BY 4.0)",
+ "piper_upmc_jessica_F": "Voix « Jessica » – données UPMC / MaryTTS (CC-BY-SA 4.0)",
+ "piper_upmc_pierre_M": "Voix « Pierre » – données UPMC / MaryTTS (CC-BY-SA 4.0)",
+ "kokoro": "Voix « SIWIS » – modèle Kokoro (Apache 2.0), données SIWIS, Université d'Édimbourg (CC-BY 4.0)",
+ "mls": "Voix issue du corpus Multilingual LibriSpeech – LibriVox (CC-BY 4.0)"
+}

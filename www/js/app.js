@@ -9,6 +9,7 @@ import { resume, playHL, playDbfs, playContinuous, NoiseMonitor, LevelError } fr
 import { ToneTest } from './tonetest.js';
 import { DinTest, dinAvailable, dinManifest, resolveVoice } from './din.js';
 import { ICONS, MASCOT, themeIcon } from './icons.js';
+import { showScreen, confetti } from './fx.js';
 
 const $ = (s, el = document) => el.querySelector(s);
 const $$ = (s, el = document) => [...el.querySelectorAll(s)];
@@ -28,9 +29,7 @@ const S = {
 };
 
 // ---------------------------------------------------------------- utilitaires UI
-function show(id) {
-  $$('.screen').forEach(s => s.classList.toggle('active', s.id === id));
-}
+function show(id) { showScreen(id); }
 function toast(msg, ms = 2200) {
   const t = document.createElement('div');
   t.className = 'toast'; t.textContent = msg;
@@ -96,6 +95,7 @@ async function boot() {
   $('#headset-ic').innerHTML = ICONS.headset;
   $('#attract-mascot').innerHTML = MASCOT.coucou;
   $('#instr-mascot').innerHTML = MASCOT.ecoute;
+  $('#din-mascot').innerHTML = MASCOT.ecoute;
   $('#attract-brand').textContent = APP.brand;
   $('#attract-store').textContent = S.settings.storeName || '';
   demoFlag();
@@ -185,12 +185,19 @@ async function demoSound() {
   playSafe(() => playHL({ calib: c, freq: 1000, ear: 'L', dbHL: 45, duration: S.settings.stimulusDuration, type: S.settings.stimulusType }));
 }
 
-function setTrialUI(ear, freq, i, total) {
+function setTrialUI(ear, freq, i) {
   const th = THEMES[freq];
-  $('#theme-ic').innerHTML = S.settings.stimulusType === 'theme' ? themeIcon(th.key) : ICONS.ear;
-  $('#theme-label').textContent = S.settings.stimulusType === 'theme' ? `Cherchez ${th.short}…` : 'Écoutez bien…';
-  const b = $('#ear-badge'); b.className = `ear-badge ${ear}`; b.textContent = `Oreille ${EAR_LABEL[ear]}`;
-  $('#progress').innerHTML = Array.from({ length: total }, (_, k) => `<i class="${k < i ? 'done' : k === i ? 'now' : ''}"></i>`).join('');
+  const themed = S.settings.stimulusType === 'theme';
+  const ic = $('#theme-ic');
+  ic.innerHTML = themed ? themeIcon(th.key) : ICONS.ear;
+  ic.classList.remove('swap'); void ic.offsetWidth; ic.classList.add('swap');
+  $('#theme-label').textContent = themed ? `Cherchez ${th.short}…` : 'Écoutez bien…';
+  const b = $('#ear-badge'); b.className = `ear-badge ${ear}`; $('#ear-label').textContent = `Oreille ${EAR_LABEL[ear]}`;
+  const k = i % FREQUENCIES.length, n = FREQUENCIES.length;
+  const j = $('#journey');
+  j.innerHTML = `<div class="fill"></div>` + FREQUENCIES.map((f, x) =>
+    `<div class="st ${x < k ? 'done' : x === k ? 'now' : ''}">${themed ? themeIcon(THEMES[f].key) : ICONS.ear}</div>`).join('');
+  requestAnimationFrame(() => { $('.fill', j).style.width = `calc((100% - 60px) * ${k / (n - 1)})`; });
 }
 
 async function runTest() {
@@ -204,9 +211,10 @@ async function runTest() {
       onNoise: w => $('#noise-banner').classList.toggle('hidden', !w),
       onEarChange: async ear => {
         if (ear === EARS[0]) return;
-        $('#earchange-ic').innerHTML = MASCOT.bravo;
+        const m = $('#earchange-ic'); m.innerHTML = MASCOT.bravo;
+        m.classList.remove('jump'); void m.offsetWidth; m.classList.add('jump');
         $('#earchange-title').textContent = `Bravo ! Passons à l'oreille ${EAR_LABEL[ear]}`;
-        show('s-earchange'); await sleep(2600); show('s-test');
+        show('s-earchange'); confetti({ count: 70, duration: 1800 }); await sleep(2800); show('s-test');
       },
     },
   });
@@ -257,8 +265,9 @@ function showResult() {
   const title = $('#result-title'), msg = $('#result-msg');
   if (r.outcome === 'pass') {
     $('#result-ic').innerHTML = MASCOT.pouce;
-    title.textContent = 'Bravo, merci !';
+    title.textContent = 'Bravo, voyage réussi !';
     msg.textContent = 'Vous avez repéré tous les sons du test. Un contrôle régulier de votre audition reste conseillé.';
+    setTimeout(() => confetti(), 350);
   } else if (r.outcome === 'refer') {
     $('#result-ic').innerHTML = MASCOT.coucou;
     title.textContent = 'Merci pour votre participation !';
@@ -326,19 +335,30 @@ async function runDin() {
   pad.innerHTML = [1,2,3,4,5,6,7,8,9].map(n => `<button data-d="${n}">${n}</button>`).join('') +
     '<button class="k-del" data-d="del">⌫</button><button data-d="0">0</button><button class="k-ok" data-d="ok">OK</button>';
   let resolver = null, typed = '';
-  const disp = $('#din-display');
+  const slots = $$('#din-slots span');
+  const draw = () => slots.forEach((sp, i) => {
+    const v = typed[i] || '';
+    if (sp.textContent !== v) { sp.textContent = v; sp.classList.toggle('on', !!v); }
+  });
   pad.onclick = e => {
     const d = e.target.closest('[data-d]')?.dataset.d; if (!d || !resolver) return;
     if (d === 'del') typed = typed.slice(0, -1);
     else if (d === 'ok') { if (typed.length === 3) { const r = resolver; resolver = null; r(typed); } return; }
     else if (typed.length < 3) typed += d;
-    disp.textContent = typed.padEnd(3, '·');
+    draw();
   };
   S.din = new DinTest({
     calib: S.calibInfo.calib, voice: S.dinVoice || 'homme', antiphasic: !!S.settings.dinAntiphasic,
     hooks: {
-      onTriplet: (i, n) => { $('#din-progress').textContent = `${i + 1} / ${n}`; $('#din-hint').textContent = 'Écoutez…'; disp.textContent = ''; },
-      askAnswer: () => new Promise(res => { typed = ''; disp.textContent = '···'; $('#din-hint').textContent = 'Tapez les 3 chiffres puis OK'; resolver = res; }),
+      onTriplet: (i, n) => {
+        $('#din-progress').textContent = `${i + 1} / ${n}`; $('#din-bar').style.width = `${(i / n) * 100}%`;
+        typed = ''; draw(); $('#din-title').textContent = 'Écoutez…'; $('#din-hint').textContent = 'Écoutez les 3 chiffres…';
+      },
+      onListen: on => $('#din-listen').classList.toggle('idle', !on),
+      askAnswer: () => new Promise(res => {
+        typed = ''; draw(); $('#din-title').textContent = 'À vous !';
+        $('#din-hint').textContent = 'Tapez les 3 chiffres dans l\u2019ordre, puis OK'; resolver = res;
+      }),
     },
   });
   let r;
@@ -389,7 +409,8 @@ document.addEventListener('click', async e => {
 $('#hear-btn').addEventListener('pointerdown', e => {
   e.preventDefault();
   S.test?.press();
-  const b = e.currentTarget; b.classList.remove('flash'); void b.offsetWidth; b.classList.add('flash');
+  const b = e.currentTarget; b.classList.add('press');
+  setTimeout(() => b.classList.remove('press'), 140);
 });
 
 // ================================================================ ADMINISTRATION
