@@ -60,6 +60,15 @@ export class ToneTest {
     const noisy = await this.waitQuiet(freq);
     const h = playHL({ calib: this.o.calib, freq, ear, dbHL: dbHL ?? this.levelFor(freq),
                        duration: s.stimulusDuration, type: s.stimulusType });
+    await h.ready;
+    if (!h.ok) {
+      // Son non joué (ex. sortie devenue mono) : pause, puis on rejoue ce même son
+      this.pause();
+      this.o.hooks?.onAudioError?.(h.error);
+      await this.waitIfPaused();
+      if (this.aborted) return null;
+      return this.present(ear, freq, dbHL, quick);
+    }
     const winEnd = h.offsetMs + s.responseWindowAfter * 1000;
     // Fin anticipée dès qu'une réponse arrive (le son est coupé, comme en audiométrie)
     while (performance.now() < winEnd && !this.aborted) {

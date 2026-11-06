@@ -5,7 +5,7 @@ import { APP, FREQUENCIES, EARS, EAR_LABEL, THEMES, LEVEL_PRESETS, EXTRA500_PRES
          DURATION_PRESETS, RECAL_DAYS } from './config.js';
 import * as store from './store.js';
 import * as device from './device.js';
-import { resume, playHL, playDbfs, playContinuous, NoiseMonitor, LevelError } from './audio.js';
+import { resume, playHL, playDbfs, playContinuous, NoiseMonitor, LevelError, onAudioIssue, setAllowMono } from './audio.js';
 import { ToneTest } from './tonetest.js';
 import { DinTest, dinAvailable, dinManifest, resolveVoice } from './din.js';
 import { ICONS, MASCOT, themeIcon } from './icons.js';
@@ -198,8 +198,15 @@ function afterAdvisor() {
   show('s-headset');
 }
 
+// Incidents de sortie audio signalés par Android (sortie mono, mode appel…)
+onAudioIssue(({ error, warning }) => {
+  if (warning) return toast(`Attention : sortie audio ${warning}. Droite et gauche ne sont pas séparées.`);
+  if (!S.test) toast(error);
+});
+
 async function prepareAudio() {
   await resume();
+  setAllowMono(!!S.settings.trialMode);
   if (S.settings.systemVolumeIndex !== null && S.settings.systemVolumeIndex !== undefined) {
     const v = await device.lockVolume(S.settings.systemVolumeIndex);
     if (device.isNative() && !v.ok) toast('Volume non verrouillé : ' + (v.error || ''));
@@ -246,6 +253,7 @@ async function runTest() {
     hooks: {
       onTrial: setTrialUI,
       onNoise: w => $('#noise-banner').classList.toggle('hidden', !w),
+      onAudioError: msg => pauseOverlay(`${msg}. Vérifiez le casque (filaire, Bluetooth coupé) puis reprenez.`),
       onPhase: async phase => {
         if (phase !== 'confirm') return;
         const m = $('#earchange-ic'); m.innerHTML = MASCOT.ecoute;
@@ -557,6 +565,7 @@ const TABS_ADVISOR = [['today', 'Aujourd’hui'], ['meter', 'Sonomètre'], ['gui
 let ADMIN = { role: null, tab: null, draft: null, bio: null, slm: null, cont: null };
 
 function openAdmin(role) {
+  setAllowMono(!!S.settings.trialMode);
   ADMIN = { role, tab: role === 'audio' ? 'settings' : 'today', draft: null, bio: { ear: 'R', freq: 1000, level: -60, subject: 0 },
             slm: { ear: 'R', freq: 1000, dbfs: -30 }, cont: null };
   ADMIN.draft = JSON.parse(JSON.stringify(store.getCalibrationRaw()));
@@ -907,7 +916,7 @@ async function tabHardware(m) {
     else { await device.stopKiosk(); toast('Verrouillage désactivé'); }
     setTimeout(renderAdmin, 600);
   });
-  bindSeg(m, 'trial', v => { saveSet({ trialMode: v === 'on' }); demoFlag(); });
+  bindSeg(m, 'trial', v => { saveSet({ trialMode: v === 'on' }); setAllowMono(v === 'on'); demoFlag(); });
   bindSeg(m, 'btprof', v => saveSet({ btProfile: v === 'on' }));
   const kown = $('#kown', m);
   if (kown) kown.onclick = async () => {

@@ -86,3 +86,20 @@ export async function getIntegrity() {
   const p = plugin(); if (!p) return { ok: true, native: false };
   try { return { native: true, ...(await p.getIntegrity()) }; } catch { return { ok: true, native: true, unknown: true }; }
 }
+
+// ---------- Son et micro natifs (v0.9.1) ----------
+// Les sons de test sont joués par Android (stéréo, une oreille à zéro absolu)
+// et le bruit est mesuré par le micro intégré de la tablette.
+async function call(name, args) {
+  const p = plugin(); if (!p || !p[name]) return { ok: false, error: 'module natif absent' };
+  try { return (await p[name](args || {})) || { ok: true }; }
+  catch (e) { return { ok: false, error: String(e?.message || e) }; }
+}
+export const playStimulus = a => call('playStimulus', a);
+export const stopStimulus = id => call('stopStimulus', { id });
+export const toneStart = a => call('toneStart', a);
+export const toneSet = dbfs => call('toneSet', { dbfs });
+export const toneStop = () => call('toneStop');
+export const micStart = () => call('micStart');
+export const micLevels = () => call('micLevels');
+export const micStop = () => call('micStop');

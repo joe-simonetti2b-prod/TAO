@@ -4,12 +4,28 @@
 //   qu'un son pur continu de niveau L. L'étalonnage au sonomètre (son pur) et l'étalonnage
 //   biologique (même stimulus que le test) restent donc cohérents.
 // - Un seul canal actif : l'autre oreille reçoit un zéro numérique absolu.
+// - Sur la tablette (v0.9.1), les sons de test sont joués par Android lui-même
+//   (module natif, stéréo) : le moteur web pouvait perdre le canal droit sur
+//   certaines sorties. Le moteur web ne sert plus qu'à l'aperçu navigateur et
+//   au test dans le bruit (même signal dans les deux oreilles).
 
 import { THEMES, MAX_DBFS } from './config.js';
+import * as device from './device.js';
 
 export class LevelError extends Error {}
 
 let ctx = null;
+
+// Sortie native disponible (appli Android) ?
+export function nativeAudio() { return device.isNative(); }
+
+// Mode essai : une sortie mono est signalée sans bloquer
+let allowMono = false;
+export function setAllowMono(v) { allowMono = !!v; }
+
+// Signalement des incidents de sortie audio (affichage côté interface)
+let issueHandler = null;
+export function onAudioIssue(fn) { issueHandler = fn; }
 
 export function getContext() {
   if (ctx) return ctx;
@@ -150,6 +166,7 @@ export function hlToDbfs(calib, ear, freq, dbHL) {
  */
 export function playDbfs({ freq, ear, dbfs, duration = 2, type = 'theme', delay = 0.05 }) {
   if (dbfs > MAX_DBFS) throw new LevelError(`Niveau trop élevé (${dbfs.toFixed(1)} dBFS) : hors de la plage sûre`);
+  if (nativeAudio()) return playNative({ freq, ear, dbfs, duration, type });
   const c = getContext();
   const mono = stimulusBuffer(freq, type, duration);
   const buf = c.createBuffer(2, mono.length, c.sampleRate);
@@ -169,7 +186,40 @@ export function playDbfs({ freq, ear, dbfs, duration = 2, type = 'theme', delay 
   const onsetMs = performance.now() + delay * 1000 + lat;
   const offsetMs = onsetMs + duration * 1000;
   const done = new Promise(res => { src.onended = res; });
-  return { onsetMs, offsetMs, done, stop: () => { try { src.stop(); } catch {} } };
+  const h = { ok: true, onsetMs, offsetMs, done, stop: () => { try { src.stop(); } catch {} } };
+  h.ready = Promise.resolve(h);
+  return h;
+}
+
+// Lecture par Android. Même interface que la lecture web ; `ready` se résout quand
+// Android a confirmé le départ du son et l'instant réel de sa sortie.
+function playNative({ freq, ear, dbfs, duration, type }) {
+  const t = performance.now();
+  const h = { ok: true, error: null, onsetMs: t + 60, offsetMs: t + 60 + duration * 1000, stopped: false };
+  let id = null, endTimer = null, endRes = null;
+  h.ready = device.playStimulus({ freq, ear, dbfs, duration, type, allowMono }).then(r => {
+    if (!r || r.ok === false) {
+      h.ok = false; h.error = r?.error || 'Erreur audio';
+      issueHandler?.({ error: h.error });
+      return h;
+    }
+    id = r.id;
+    h.onsetMs = performance.now() + (typeof r.startsInMs === 'number' ? r.startsInMs : 0);
+    h.offsetMs = h.onsetMs + duration * 1000;
+    h.route = r.route; h.mono = r.mono || null;
+    if (r.mono) issueHandler?.({ warning: r.mono });
+    if (h.stopped) device.stopStimulus(id);
+    return h;
+  });
+  h.done = h.ready.then(() => (!h.ok || h.stopped) ? undefined : new Promise(res => {
+    endRes = res; endTimer = setTimeout(res, Math.max(0, h.offsetMs - performance.now() + 30));
+  }));
+  h.stop = () => {
+    h.stopped = true;
+    if (id !== null) device.stopStimulus(id);
+    if (endRes) { clearTimeout(endTimer); endRes(); }
+  };
+  return h;
 }
 
 export function playHL({ calib, freq, ear, dbHL, duration, type }) {
@@ -179,6 +229,16 @@ export function playHL({ calib, freq, ear, dbHL, duration, type }) {
 /** Son pur continu pour la mesure au sonomètre. */
 export function playContinuous({ freq, ear, dbfs }) {
   if (dbfs > MAX_DBFS) throw new LevelError('Niveau trop élevé');
+  if (nativeAudio()) {
+    let chain = device.toneStart({ freq, ear, dbfs, allowMono }).then(r => {
+      if (r && r.ok === false) issueHandler?.({ error: r.error || 'Erreur audio' });
+      else if (r?.mono) issueHandler?.({ warning: r.mono });
+    });
+    return {
+      setDbfs(v) { if (v <= MAX_DBFS) chain = chain.then(() => device.toneSet(v)); },
+      stop() { chain = chain.then(() => device.toneStop()); },
+    };
+  }
   const c = getContext();
   const osc = c.createOscillator();
   osc.frequency.value = freq;
@@ -206,10 +266,11 @@ export function playContinuous({ freq, ear, dbfs }) {
 // ---------- Bruit ambiant (micro de la tablette) ----------
 
 export class NoiseMonitor {
-  constructor() { this.analyser = null; this.stream = null; this.bins = null; }
+  constructor() { this.analyser = null; this.stream = null; this.bins = null; this.nat = null; }
 
   async start() {
-    if (this.analyser) return true;
+    if (this.analyser || this.nat) return true;
+    if (nativeAudio()) return this.startNative();
     try {
       this.stream = await navigator.mediaDevices.getUserMedia({
         audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false },
@@ -225,15 +286,36 @@ export class NoiseMonitor {
     } catch { this.analyser = null; return false; }
   }
 
+  // Micro intégré de la tablette via Android (analyse identique : FFT 8192, Blackman, lissage 0,6)
+  async startNative() {
+    const r = await device.micStart();
+    if (!r?.ok) return false;
+    const nat = { bands: null, a: null, timer: null, source: r.source };
+    this.nat = nat;
+    const poll = async () => {
+      if (this.nat !== nat) return;
+      const l = await device.micLevels();
+      if (this.nat !== nat) return;
+      if (l?.ok && l.ready) { nat.bands = l.bands; nat.a = l.a; }
+      nat.timer = setTimeout(poll, 100);
+    };
+    await poll();
+    const t0 = performance.now(); // première analyse disponible après ~0,2 s
+    while (this.nat === nat && !nat.bands && performance.now() - t0 < 1500) await new Promise(res => setTimeout(res, 50));
+    return this.nat === nat;
+  }
+
   stop() {
+    if (this.nat) { clearTimeout(this.nat.timer); this.nat = null; device.micStop(); }
     try { this.stream?.getTracks().forEach(t => t.stop()); } catch {}
     this.analyser = null; this.stream = null;
   }
 
-  get active() { return !!this.analyser; }
+  get active() { return !!this.analyser || !!this.nat; }
 
   // Niveau (dB relatif, non étalonné) dans la bande d'octave centrée sur f
   bandLevel(f) {
+    if (this.nat) { const v = this.nat.bands?.[f] ?? this.nat.bands?.[String(f)]; return typeof v === 'number' ? v : null; }
     if (!this.analyser) return null;
     this.analyser.getFloatFrequencyData(this.bins);
     const sr = getContext().sampleRate;
@@ -246,6 +328,7 @@ export class NoiseMonitor {
 
   // Niveau global pondéré A (dB relatifs au micro ; + offset d'étalonnage = dB(A))
   levelA() {
+    if (this.nat) return typeof this.nat.a === 'number' ? this.nat.a : null;
     if (!this.analyser) return null;
     this.analyser.getFloatFrequencyData(this.bins);
     const sr = getContext().sampleRate, hz = sr / this.analyser.fftSize;
