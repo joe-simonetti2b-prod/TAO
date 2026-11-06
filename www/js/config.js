@@ -4,7 +4,7 @@
 export const APP = {
   name: 'TAO',
   fullName: 'Test Auditif Optique',
-  version: '0.5.0',
+  version: '0.9.0',
   brand: 'Balbi Audition',
 };
 
@@ -44,7 +44,8 @@ export const DEFAULT_SETTINGS = {
   dinVoice: 'auto',            // 'homme' | 'femme' | 'auto' (alterne)
   dinAntiphasic: false,
   dinReferSrt: -7,             // seuil d'orientation provisoire (dB RSB) – à valider
-  advisors: [],                // conseillers (traçabilité)
+  advisors: [],
+  trialMode: false,            // mode essai (sans casque filaire) : désactivé par défaut                // conseillers (traçabilité)
 };
 
 export const LEVEL_PRESETS = [20, 25, 30, 35];

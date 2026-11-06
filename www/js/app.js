@@ -251,6 +251,7 @@ async function runTest() {
         const m = $('#earchange-ic'); m.innerHTML = MASCOT.ecoute;
         m.classList.remove('jump'); void m.offsetWidth; m.classList.add('jump');
         $('#earchange-title').textContent = 'Dernière étape : on réécoute quelques sons';
+        $('#earchange-sub').textContent = 'Encore quelques secondes, c\u2019est presque fini.';
         show('s-earchange'); await sleep(2600); show('s-test');
       },
       onEarChange: async (ear, confirm) => {
@@ -258,6 +259,7 @@ async function runTest() {
         const m = $('#earchange-ic'); m.innerHTML = MASCOT.bravo;
         m.classList.remove('jump'); void m.offsetWidth; m.classList.add('jump');
         $('#earchange-title').textContent = `Bravo ! Passons à l'oreille ${EAR_LABEL[ear]}`;
+        $('#earchange-sub').textContent = 'La moitié du voyage est faite.';
         show('s-earchange'); confetti({ count: 70, duration: 1800 }); await sleep(2800); show('s-test');
       },
     },
@@ -1029,7 +1031,10 @@ async function tabSetup(m) {
   $$('[data-manual]', m).forEach(b => b.onclick = () => { const k = b.dataset.manual; saveSet({ setupManual: { ...man, [k]: !man[k] } }); renderAdmin(); });
   $$('[data-goto]', m).forEach(b => b.onclick = () => { ADMIN.tab = b.dataset.goto; if (b.dataset.sub) ADMIN.sub = b.dataset.sub; renderAdmin(); });
   $('#srefresh', m).onclick = () => renderAdmin();
-  $('#sdone', m).onclick = () => { saveSet({ setupDone: true }, 'Installation enregistrée'); renderAdmin(); };
+  $('#sdone', m).onclick = () => {
+    if (store.pinsAreDefault() && !S.settings.trialMode) return toast('Changez d\u2019abord les codes par défaut (étape 8)', 3500);
+    saveSet({ setupDone: true }, 'Installation enregistrée'); renderAdmin();
+  };
 }
 
 // ---------- Sonomètre intégré
